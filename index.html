@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Quiniela Fútbol</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap');
+  :root {
+    --verde: #16a34a; --verde-claro: #bbf7d0; --rojo: #dc2626;
+    --amarillo: #ca8a04; --fondo: #0f1117; --panel: #1a1d27;
+    --borde: #2e3347; --texto: #e8eaf0; --gris: #6b7280; --acento: #3b82f6;
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { font-family:'Inter',sans-serif; background:var(--fondo); color:var(--texto); min-height:100vh; }
+
+  nav {
+    background:var(--panel); border-bottom:2px solid var(--acento);
+    padding:0 20px; display:flex; align-items:center; justify-content:space-between;
+    height:56px; position:sticky; top:0; z-index:100;
+  }
+  nav h1 { font-family:'Bebas Neue',sans-serif; font-size:1.8rem; letter-spacing:2px; color:var(--acento); }
+  nav .tabs { display:flex; gap:4px; }
+  nav button {
+    background:none; border:none; color:var(--gris); cursor:pointer;
+    padding:6px 14px; border-radius:6px; font-size:.85rem; font-weight:600; transition:.2s;
+  }
+  nav button.active, nav button:hover { background:var(--acento); color:#fff; }
+
+  .view { display:none; padding:24px 16px; max-width:1100px; margin:0 auto; }
+  .view.active { display:block; }
+
+  .card { background:var(--panel); border:1px solid var(--borde); border-radius:12px; padding:20px; margin-bottom:20px; }
+  .card h2 { font-family:'Bebas Neue',sans-serif; font-size:1.3rem; letter-spacing:1px; color:var(--acento); margin-bottom:14px; }
+
+  input[type=text], input[type=password], select {
+    background:var(--fondo); border:1px solid var(--borde); color:var(--texto);
+    border-radius:8px; padding:8px 12px; font-size:.9rem; width:100%; outline:none; transition:.2s;
+  }
+  input:focus, select:focus { border-color:var(--acento); }
+  label { font-size:.8rem; color:var(--gris); display:block; margin-bottom:4px; }
+  .field { margin-bottom:12px; }
+
+  .btn { padding:9px 18px; border-radius:8px; font-weight:600; font-size:.85rem; cursor:pointer; border:none; transition:.2s; }
+  .btn-primary { background:var(--acento); color:#fff; }
+  .btn-primary:hover { background:#2563eb; }
+  .btn-success { background:var(--verde); color:#fff; }
+  .btn-success:hover { background:#15803d; }
+  .btn-danger { background:var(--rojo); color:#fff; }
+  .btn-danger:hover { background:#b91c1c; }
+  .btn-sm { padding:5px 10px; font-size:.78rem; }
+  .btn-ghost { background:transparent; border:1px solid var(--borde); color:var(--texto); }
+  .btn-ghost:hover { border-color:var(--acento); color:var(--acento); }
+
+  .table-wrap { overflow-x:auto; border-radius:10px; border:1px solid var(--borde); }
+  table { border-collapse:collapse; width:100%; min-width:600px; }
+  thead { background:#12151e; }
+  th {
+    padding:10px 12px; font-size:.75rem; text-transform:uppercase;
+    letter-spacing:.08em; color:var(--gris); text-align:center;
+    border-bottom:1px solid var(--borde); white-space:nowrap;
+  }
+  td { padding:9px 10px; border-bottom:1px solid var(--borde); font-size:.85rem; text-align:center; vertical-align:middle; }
+  tr:last-child td { border-bottom:none; }
+  tr:hover td { background:rgba(59,130,246,.05); }
+  .name-cell { text-align:left !important; font-weight:600; white-space:nowrap; padding-left:14px; }
+
+  .pick { display:inline-block; padding:3px 8px; border-radius:4px; font-weight:700; font-size:.8rem; min-width:32px; background:#2e3347; color:var(--texto); }
+  .pick.correct { background:var(--verde); color:#fff; }
+  .pick.wrong { background:#2e3347; color:var(--gris); }
+
+  .result-badge { display:inline-block; padding:2px 8px; border-radius:4px; font-weight:700; font-size:.8rem; background:#1e293b; color:var(--acento); border:1px solid var(--acento); }
+
+  .match-teams { display:flex; flex-direction:column; gap:1px; }
+  .match-teams .home { font-size:.72rem; font-weight:600; color:var(--texto); }
+  .match-teams .away { font-size:.68rem; color:var(--gris); }
+
+  .badge-paid { color:var(--verde); font-size:1.1rem; }
+  .badge-unpaid { color:var(--rojo); font-size:1.1rem; }
+  .score-cell { font-weight:700; color:var(--acento); }
+
+  .match-row { display:flex; align-items:center; gap:10px; flex-wrap:wrap; padding:10px 0; border-bottom:1px solid var(--borde); }
+  .match-row:last-child { border-bottom:none; }
+  .vs { color:var(--gris); font-weight:700; flex-shrink:0; }
+  .match-row input { flex:1; min-width:90px; }
+
+  .select-options { display:flex; gap:6px; justify-content:center; flex-wrap:wrap; }
+  .opt-btn { padding:5px 10px; border-radius:6px; font-weight:700; font-size:.8rem; cursor:pointer; border:2px solid var(--borde); background:none; color:var(--gris); transition:.15s; }
+  .opt-btn:hover { border-color:var(--acento); color:var(--acento); }
+  .opt-btn.sel-L { border-color:var(--verde); color:var(--verde); background:rgba(22,163,74,.15); }
+  .opt-btn.sel-E { border-color:var(--amarillo); color:var(--amarillo); background:rgba(202,138,4,.15); }
+  .opt-btn.sel-V { border-color:var(--acento); color:var(--acento); background:rgba(59,130,246,.15); }
+
+  .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+  @media(max-width:600px){ .grid2 { grid-template-columns:1fr; } }
+
+  .wa-btn {
+    background:#25d366; color:#fff; padding:10px 22px; border-radius:8px;
+    font-weight:700; font-size:.9rem; border:none; cursor:pointer;
+    display:inline-flex; align-items:center; gap:8px; text-decoration:none; transition:.2s;
+  }
+  .wa-btn:hover { background:#1da851; }
+
+  #toast {
+    position:fixed; bottom:20px; right:20px; background:var(--verde);
+    color:#fff; padding:10px 18px; border-radius:8px; font-weight:600;
+    font-size:.85rem; z-index:9999; opacity:0; transition:.3s; pointer-events:none;
+  }
+  #toast.show { opacity:1; }
+  #toast.error { background:var(--rojo); }
+
+  .empty-state { text-align:center; padding:40px; color:var(--gris); }
+
+  hr { border:none; border-top:1px solid var(--borde); margin:16px 0; }
+  .flex-row { display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+  .ml-auto { margin-left:auto; }
+  .note { font-size:.78rem; color:var(--gris); margin-top:4px; }
+
+  .pay-toggle { cursor:pointer; background:none; border:1px solid var(--borde); border-radius:6px; padding:3px 8px; font-size:.78rem; color:var(--gris); transition:.2s; }
+  .pay-toggle.paid { border-color:var(--verde); color:var(--verde); }
+
+  /* loading spinner */
+  .spinner { display:inline-block; width:18px; height:18px; border:3px solid var(--borde); border-top-color:var(--acento); border-radius:50%; animation:spin .7s linear infinite; }
+  @keyframes spin { to { transform:rotate(360deg); } }
+  .loading-overlay { text-align:center; padding:40px; color:var(--gris); }
+
+  /* online indicator */
+  .online-dot { width:8px; height:8px; border-radius:50%; background:var(--verde); display:inline-block; margin-right:6px; animation:pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+  .sync-bar { background:rgba(59,130,246,.1); border:1px solid rgba(59,130,246,.3); border-radius:8px; padding:8px 14px; font-size:.8rem; color:var(--acento); display:flex; align-items:center; gap:8px; margin-bottom:16px; }
+</style>
+</head>
+<body>
+
+<nav>
+  <h1>⚽ Quiniela</h1>
+  <div class="tabs">
+    <button class="active" onclick="goView('participante')">Participante</button>
+    <button onclick="goView('admin-auth')">Admin</button>
+  </div>
+</nav>
+
+<!-- ══ VISTA PARTICIPANTE ══ -->
+<div id="view-participante" class="view active">
+
+  <div class="sync-bar">
+    <span class="online-dot"></span>
+    En línea — la tabla se actualiza en tiempo real en todos los dispositivos
+  </div>
+
+  <div class="card" id="registro-card">
+    <h2>📋 Llenar mi quiniela</h2>
+    <div class="grid2">
+      <div class="field">
+        <label>Tu nombre</label>
+        <input type="text" id="p-nombre" placeholder="Ej: Carlos García">
+      </div>
+    </div>
+    <div id="partidos-seleccion">
+      <div class="loading-overlay"><div class="spinner"></div><p style="margin-top:10px">Cargando partidos...</p></div>
+    </div>
+    <div class="flex-row" style="margin-top:14px" id="send-row" style="display:none">
+      <button class="btn btn-success" onclick="registrarParticipante()">✅ Registrar pronósticos</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="flex-row" style="margin-bottom:12px">
+      <h2 style="margin:0">📊 Tabla de la quiniela</h2>
+      <button class="btn btn-danger btn-sm ml-auto" onclick="eliminarQuiniela()">🗑 Eliminar quiniela</button>
+    </div>
+    <div class="table-wrap">
+      <table id="tabla-participantes">
+        <thead id="tabla-head"></thead>
+        <tbody id="tabla-body"><tr><td colspan="99" style="text-align:center;color:var(--gris);padding:24px"><div class="spinner"></div></td></tr></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- ══ VISTA ADMIN AUTH ══ -->
+<div id="view-admin-auth" class="view">
+  <div class="card" style="max-width:360px;margin:40px auto">
+    <h2>🔐 Área de administrador</h2>
+    <div class="field"><label>Contraseña</label><input type="password" id="pwd-main" placeholder="••••••" onkeydown="if(event.key==='Enter')doLoginMain()"></div>
+    <button class="btn btn-primary" onclick="doLoginMain()">Acceder</button>
+  </div>
+</div>
+
+<!-- ══ VISTA ADMIN PANEL ══ -->
+<div id="view-admin" class="view">
+
+  <div class="card">
+    <h2>⚙️ Configurar partidos</h2>
+    <div id="partidos-admin-list"></div>
+    <div class="flex-row" style="margin-top:12px">
+      <button class="btn btn-ghost btn-sm" onclick="agregarPartido()">+ Agregar partido</button>
+      <button class="btn btn-primary btn-sm" onclick="guardarPartidos()">💾 Guardar partidos</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>🏆 Registrar resultados</h2>
+    <p class="note" style="margin-bottom:12px">Selecciona el resultado real. Los participantes verán en verde los aciertos.</p>
+    <div id="resultados-admin"></div>
+    <div class="flex-row" style="margin-top:12px">
+      <button class="btn btn-success" onclick="guardarResultados()">✅ Guardar resultados</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>👥 Participantes &amp; Pagos</h2>
+    <div class="table-wrap">
+      <table id="tabla-admin">
+        <thead id="tabla-admin-head"></thead>
+        <tbody id="tabla-admin-body"><tr><td colspan="99" style="text-align:center;color:var(--gris);padding:24px"><div class="spinner"></div></td></tr></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<div id="toast">✓ Guardado</div>
+
+<!-- Firebase SDK -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getDatabase, ref, set, get, onValue, update, remove }
+  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+/* ── CONFIG ── */
+const firebaseConfig = {
+  apiKey: "AIzaSyDM9vEtAvqd-vQljebYtL-DRWeljK_Ju7c",
+  authDomain: "quinela-online.firebaseapp.com",
+  databaseURL: "https://quinela-online-default-rtdb.firebaseio.com",
+  projectId: "quinela-online",
+  storageBucket: "quinela-online.firebasestorage.app",
+  messagingSenderId: "1013896056033",
+  appId: "1:1013896056033:web:19624abed8e318d3157ba0"
+};
+const app = initializeApp(firebaseConfig);
+const db  = getDatabase(app);
+
+const ADMIN_PWD = 'admin123';
+let adminAuthed = false;
+
+/* ── STATE local (espejo de Firebase) ── */
+let state = { partidos:[], resultados:{}, participantes:[] };
+let tmpPartidos = [];
+
+/* ════════════════════════════
+   ESCUCHA EN TIEMPO REAL
+════════════════════════════ */
+function startListeners() {
+  onValue(ref(db, 'quiniela'), snap => {
+    const data = snap.val();
+    if (data) {
+      state.partidos      = data.partidos      ? Object.values(data.partidos)      : [];
+      state.resultados    = data.resultados    || {};
+      state.participantes = data.participantes ? Object.values(data.participantes) : [];
+    } else {
+      state = { partidos:[], resultados:{}, participantes:[] };
+    }
+    renderTablaParticipantes();
+    renderSeleccion();
+    if (adminAuthed) {
+      renderResultadosAdmin();
+      renderAdminTabla();
+    }
+  });
+}
+
+/* ════════════════════════════
+   GUARDAR EN FIREBASE
+════════════════════════════ */
+async function fbSet(path, value) {
+  await set(ref(db, path), value);
+}
+async function fbUpdate(path, value) {
+  await update(ref(db, path), value);
+}
+async function fbRemove(path) {
+  await remove(ref(db, path));
+}
+
+/* ════════════════════════════
+   NAVEGACIÓN
+════════════════════════════ */
+window.goView = function(id) {
+  const map = { participante:'view-participante', 'admin-auth':'view-admin-auth', admin:'view-admin' };
+  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+  document.querySelectorAll('nav button').forEach((b,i) => {
+    b.classList.remove('active');
+    if (i===0 && id==='participante') b.classList.add('active');
+    if (i===1 && (id==='admin-auth'||id==='admin')) b.classList.add('active');
+  });
+  const el = document.getElementById(map[id]||'view-'+id);
+  if (el) el.classList.add('active');
+  if (id==='admin') renderAdminView();
+};
+
+/* ════════════════════════════
+   AUTH
+════════════════════════════ */
+window.doLoginMain = function() {
+  const v = document.getElementById('pwd-main').value;
+  if (v === ADMIN_PWD) {
+    adminAuthed = true;
+    document.getElementById('pwd-main').value = '';
+    goView('admin');
+  } else {
+    toast('Contraseña incorrecta', true);
+  }
+};
+
+/* ════════════════════════════
+   TOAST
+════════════════════════════ */
+function toast(msg, err=false) {
+  const t = document.getElementById('toast');
+  t.textContent = (err?'✗ ':'✓ ') + msg;
+  t.className = 'show' + (err?' error':'');
+  setTimeout(() => t.className = '', 2500);
+}
+
+/* ════════════════════════════
+   VISTA PARTICIPANTE
+════════════════════════════ */
+let tmpPicks = {};
+
+function renderSeleccion() {
+  const cont    = document.getElementById('partidos-seleccion');
+  const sendRow = document.getElementById('send-row');
+  if (!state.partidos.length) {
+    cont.innerHTML = '<div class="empty-state"><p>El administrador aún no ha configurado los partidos.</p></div>';
+    sendRow.style.display = 'none';
+    return;
+  }
+  sendRow.style.display = 'flex';
+  cont.innerHTML = state.partidos.map(p => `
+    <div class="match-row">
+      <div style="flex:1;min-width:140px">
+        <span style="font-weight:700">${esc(p.home)}</span>
+        <span class="vs"> vs </span>
+        <span style="font-weight:700">${esc(p.away)}</span>
+      </div>
+      <div class="select-options" data-id="${p.id}">
+        ${['L','E','V'].map(o => {
+          const sel = tmpPicks[p.id] === o;
+          return `<button class="opt-btn ${sel?'sel-'+o:''}" onclick="selectPick('${p.id}','${o}',this)">${o}</button>`;
+        }).join('')}
+      </div>
+    </div>
+  `).join('');
+}
+
+window.selectPick = function(matchId, opt, btn) {
+  tmpPicks[matchId] = opt;
+  const row = btn.closest('[data-id]');
+  row.querySelectorAll('.opt-btn').forEach(b => b.className = 'opt-btn');
+  btn.classList.add('sel-' + opt);
+};
+
+window.registrarParticipante = async function() {
+  const nombre = document.getElementById('p-nombre').value.trim();
+  if (!nombre) { toast('Escribe tu nombre primero', true); return; }
+  if (!state.partidos.length) { toast('No hay partidos configurados', true); return; }
+
+  const faltantes = state.partidos.filter(p => !tmpPicks[p.id]);
+  if (faltantes.length) { toast('Selecciona un resultado para cada partido', true); return; }
+
+  const existe = state.participantes.find(p => p.nombre.toLowerCase() === nombre.toLowerCase());
+  if (existe) { toast('Ya existe un participante con ese nombre', true); return; }
+
+  const id = uid();
+  const participante = { id, nombre, picks: { ...tmpPicks }, pagado: false };
+
+  try {
+    await fbSet(`quiniela/participantes/${id}`, participante);
+    toast('¡Registrado! ' + nombre);
+
+    // Mensaje WhatsApp
+    const lineas = state.partidos.map(p => `${p.home} vs ${p.away}: *${tmpPicks[p.id]}*`).join('\n');
+    const msg = encodeURIComponent(`🏆 *Quiniela - ${nombre}*\n\n${lineas}\n\n_Enviado desde la Quiniela App_`);
+    const wa = document.createElement('div');
+    wa.style.cssText = 'position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:300';
+    wa.innerHTML = `<a class="wa-btn" href="https://wa.me/?text=${msg}" target="_blank">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+      Enviar pronóstico a WhatsApp
+    </a>`;
+    document.body.appendChild(wa);
+    setTimeout(() => wa.remove(), 9000);
+
+    tmpPicks = {};
+    document.getElementById('p-nombre').value = '';
+    renderSeleccion();
+  } catch(e) { toast('Error al guardar: ' + e.message, true); }
+};
+
+/* ════════════════════════════
+   TABLA PARTICIPANTES PÚBLICA
+════════════════════════════ */
+function renderTablaParticipantes() {
+  const head = document.getElementById('tabla-head');
+  const body = document.getElementById('tabla-body');
+  if (!state.participantes.length || !state.partidos.length) {
+    head.innerHTML = '';
+    body.innerHTML = '<tr><td colspan="99" style="text-align:center;color:var(--gris);padding:24px">Aún no hay participantes registrados</td></tr>';
+    return;
+  }
+  head.innerHTML = `<tr>
+    <th style="text-align:left;padding-left:14px">Participante</th>
+    <th>Pago</th>
+    ${state.partidos.map(p=>`<th class="partido-col"><div class="match-teams"><span class="home">${esc(p.home)}</span><span class="away">${esc(p.away)}</span></div></th>`).join('')}
+    <th>Aciertos</th>
+  </tr>`;
+
+  const hasResult = Object.keys(state.resultados).length > 0;
+  body.innerHTML = state.participantes.map(part => {
+    let aciertos = 0;
+    const celdas = state.partidos.map(p => {
+      const pick = part.picks?.[p.id] || '–';
+      const res  = state.resultados[p.id];
+      let cls = '';
+      if (res) { if (pick===res){cls='correct';aciertos++;}else{cls='wrong';} }
+      return `<td><span class="pick ${cls}">${pick}</span></td>`;
+    }).join('');
+    const pagoIcon = part.pagado
+      ? `<span class="badge-paid" title="Pagó">✅</span>`
+      : `<span class="badge-unpaid" title="Pendiente">⏳</span>`;
+    return `<tr>
+      <td class="name-cell">${esc(part.nombre)}</td>
+      <td>${pagoIcon}</td>
+      ${celdas}
+      <td class="score-cell">${hasResult ? aciertos : '–'}</td>
+    </tr>`;
+  }).join('');
+}
+
+/* ════════════════════════════
+   ADMIN PANEL
+════════════════════════════ */
+function renderAdminView() {
+  renderPartidosAdmin();
+  renderResultadosAdmin();
+  renderAdminTabla();
+}
+
+/* ── Partidos ── */
+function renderPartidosAdmin() {
+  if (!tmpPartidos.length && state.partidos.length) tmpPartidos = state.partidos.map(p=>({...p}));
+  if (!tmpPartidos.length) tmpPartidos = [{ id:uid(), home:'', away:'' }];
+  const cont = document.getElementById('partidos-admin-list');
+  cont.innerHTML = tmpPartidos.map((p,i) => `
+    <div class="match-row">
+      <span style="color:var(--gris);font-size:.8rem;min-width:20px">${i+1}.</span>
+      <input type="text" placeholder="Equipo local" value="${esc(p.home)}" oninput="tmpPartidos[${i}].home=this.value">
+      <span class="vs">vs</span>
+      <input type="text" placeholder="Equipo visitante" value="${esc(p.away)}" oninput="tmpPartidos[${i}].away=this.value">
+      <button class="btn btn-danger btn-sm" onclick="quitarPartido(${i})">✕</button>
+    </div>
+  `).join('');
+}
+
+window.agregarPartido = function() { tmpPartidos.push({id:uid(),home:'',away:''}); renderPartidosAdmin(); };
+window.quitarPartido  = function(i){ tmpPartidos.splice(i,1); renderPartidosAdmin(); };
+
+window.guardarPartidos = async function() {
+  const validos = tmpPartidos.filter(p=>p.home.trim()&&p.away.trim());
+  if (!validos.length) { toast('Agrega al menos un partido con ambos equipos', true); return; }
+  const obj = {};
+  validos.forEach(p => obj[p.id] = p);
+  try {
+    await fbSet('quiniela/partidos', obj);
+    toast('Partidos guardados');
+  } catch(e) { toast('Error: '+e.message, true); }
+};
+
+/* ── Resultados ── */
+function renderResultadosAdmin() {
+  const cont = document.getElementById('resultados-admin');
+  if (!state.partidos.length) { cont.innerHTML='<p class="note">Primero guarda los partidos.</p>'; return; }
+  cont.innerHTML = state.partidos.map(p => `
+    <div class="match-row">
+      <div style="flex:1;min-width:140px;font-weight:600">${esc(p.home)} vs ${esc(p.away)}</div>
+      <div class="select-options" data-rid="${p.id}">
+        ${['L','E','V'].map(o => {
+          const sel = state.resultados[p.id]===o;
+          return `<button class="opt-btn ${sel?'sel-'+o:''}" onclick="selResult('${p.id}','${o}',this)">${o}</button>`;
+        }).join('')}
+        ${state.resultados[p.id]
+          ? `<span class="result-badge">${state.resultados[p.id]}</span>`
+          : '<span class="note">Sin resultado</span>'}
+      </div>
+    </div>
+  `).join('');
+}
+
+window.selResult = function(matchId, opt, btn) {
+  state.resultados[matchId] = opt;
+  const row = btn.closest('[data-rid]');
+  row.querySelectorAll('.opt-btn').forEach(b=>b.className='opt-btn');
+  btn.classList.add('sel-'+opt);
+  let badge = row.querySelector('.result-badge');
+  if (!badge) { badge=document.createElement('span'); badge.className='result-badge'; row.appendChild(badge); }
+  badge.textContent = opt;
+  const nota = row.querySelector('.note'); if(nota) nota.remove();
+};
+
+window.guardarResultados = async function() {
+  try {
+    await fbSet('quiniela/resultados', state.resultados);
+    toast('Resultados guardados — la tabla se actualizó en todos los dispositivos');
+  } catch(e) { toast('Error: '+e.message, true); }
+};
+
+/* ── Tabla Admin ── */
+function renderAdminTabla() {
+  const head = document.getElementById('tabla-admin-head');
+  const body = document.getElementById('tabla-admin-body');
+  if (!state.participantes.length || !state.partidos.length) {
+    head.innerHTML='';
+    body.innerHTML='<tr><td colspan="99" style="text-align:center;color:var(--gris);padding:24px">Sin participantes aún</td></tr>';
+    return;
+  }
+  head.innerHTML = `<tr>
+    <th style="text-align:left;padding-left:14px">Participante</th>
+    <th>Pago</th>
+    ${state.partidos.map(p=>`<th class="partido-col"><div class="match-teams"><span class="home">${esc(p.home)}</span><span class="away">${esc(p.away)}</span></div></th>`).join('')}
+    <th>Aciertos</th>
+    <th>Acciones</th>
+  </tr>`;
+
+  const hasResult = Object.keys(state.resultados).length>0;
+  body.innerHTML = state.participantes.map(part => {
+    let aciertos=0;
+    const celdas = state.partidos.map(p=>{
+      const pick=part.picks?.[p.id]||'–', res=state.resultados[p.id];
+      let cls='';
+      if(res){if(pick===res){cls='correct';aciertos++;}else{cls='wrong';}}
+      return `<td><span class="pick ${cls}">${pick}</span></td>`;
+    }).join('');
+    const pagoClass = part.pagado?'paid':'';
+    const pagoLabel = part.pagado?'Pagó ✅':'Pendiente ⏳';
+    return `<tr>
+      <td class="name-cell">${esc(part.nombre)}</td>
+      <td><button class="pay-toggle ${pagoClass}" onclick="togglePago('${part.id}',${part.pagado})">${pagoLabel}</button></td>
+      ${celdas}
+      <td class="score-cell">${hasResult?aciertos:'–'}</td>
+      <td><button class="btn btn-danger btn-sm" onclick="eliminarParticipante('${part.id}','${esc(part.nombre)}')">🗑</button></td>
+    </tr>`;
+  }).join('');
+}
+
+window.togglePago = async function(id, actual) {
+  try {
+    await fbUpdate(`quiniela/participantes/${id}`, { pagado: !actual });
+    toast(!actual ? 'Marcado como pagado' : 'Marcado como pendiente');
+  } catch(e) { toast('Error: '+e.message, true); }
+};
+
+window.eliminarParticipante = async function(id, nombre) {
+  if (!confirm(`¿Eliminar a ${nombre}?`)) return;
+  try {
+    await fbRemove(`quiniela/participantes/${id}`);
+    toast('Participante eliminado');
+  } catch(e) { toast('Error: '+e.message, true); }
+};
+
+window.eliminarQuiniela = async function() {
+  if (!confirm('¿Eliminar TODA la quiniela? Se borrarán partidos, resultados y participantes en todos los dispositivos.')) return;
+  try {
+    await fbRemove('quiniela');
+    tmpPartidos = [];
+    toast('Quiniela eliminada');
+  } catch(e) { toast('Error: '+e.message, true); }
+};
+
+/* ════════════════════════════
+   UTILS
+════════════════════════════ */
+function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+/* ════════════════════════════
+   INIT
+════════════════════════════ */
+startListeners();
+</script>
+</body>
+</html>
