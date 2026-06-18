@@ -3,588 +3,1675 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Quiniela Fútbol</title>
+<title>Mundial 2026 — Stats</title>
 <style>
-  @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@400;500;600;700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;900&family=Barlow:wght@400;500;600&display=swap');
+
   :root {
-    --verde: #16a34a; --verde-claro: #bbf7d0; --rojo: #dc2626;
-    --amarillo: #ca8a04; --fondo: #0f1117; --panel: #1a1d27;
-    --borde: #2e3347; --texto: #e8eaf0; --gris: #6b7280; --acento: #3b82f6;
+    --bg: #090c14;
+    --surface: #0f1523;
+    --surface2: #161d30;
+    --border: #1e2a45;
+    --accent: #00c2ff;
+    --accent2: #f5a623;
+    --green: #00e676;
+    --red: #ff4444;
+    --yellow: #ffd600;
+    --text: #e8edf5;
+    --muted: #6b7a99;
   }
-  * { margin:0; padding:0; box-sizing:border-box; }
-  body { font-family:'Inter',sans-serif; background:var(--fondo); color:var(--texto); min-height:100vh; }
 
-  nav {
-    background:var(--panel); border-bottom:2px solid var(--acento);
-    padding:0 20px; display:flex; align-items:center; justify-content:space-between;
-    height:56px; position:sticky; top:0; z-index:100;
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Barlow', sans-serif;
+    min-height: 100vh;
+    overflow-x: hidden;
   }
-  nav h1 { font-family:'Bebas Neue',sans-serif; font-size:1.8rem; letter-spacing:2px; color:var(--acento); }
-  nav .tabs { display:flex; gap:4px; }
-  nav button {
-    background:none; border:none; color:var(--gris); cursor:pointer;
-    padding:6px 14px; border-radius:6px; font-size:.85rem; font-weight:600; transition:.2s;
+
+  /* ── HEADER ── */
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 32px;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+    position: sticky;
+    top: 0;
+    z-index: 100;
   }
-  nav button.active, nav button:hover { background:var(--acento); color:#fff; }
-
-  .view { display:none; padding:24px 16px; max-width:1100px; margin:0 auto; }
-  .view.active { display:block; }
-
-  .card { background:var(--panel); border:1px solid var(--borde); border-radius:12px; padding:20px; margin-bottom:20px; }
-  .card h2 { font-family:'Bebas Neue',sans-serif; font-size:1.3rem; letter-spacing:1px; color:var(--acento); margin-bottom:14px; }
-
-  input[type=text], input[type=password], select {
-    background:var(--fondo); border:1px solid var(--borde); color:var(--texto);
-    border-radius:8px; padding:8px 12px; font-size:.9rem; width:100%; outline:none; transition:.2s;
+  .logo {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: 1.5rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--accent);
   }
-  input:focus, select:focus { border-color:var(--acento); }
-  label { font-size:.8rem; color:var(--gris); display:block; margin-bottom:4px; }
-  .field { margin-bottom:12px; }
-
-  .btn { padding:9px 18px; border-radius:8px; font-weight:600; font-size:.85rem; cursor:pointer; border:none; transition:.2s; }
-  .btn-primary { background:var(--acento); color:#fff; }
-  .btn-primary:hover { background:#2563eb; }
-  .btn-success { background:var(--verde); color:#fff; }
-  .btn-success:hover { background:#15803d; }
-  .btn-danger { background:var(--rojo); color:#fff; }
-  .btn-danger:hover { background:#b91c1c; }
-  .btn-sm { padding:5px 10px; font-size:.78rem; }
-  .btn-ghost { background:transparent; border:1px solid var(--borde); color:var(--texto); }
-  .btn-ghost:hover { border-color:var(--acento); color:var(--acento); }
-
-  .table-wrap { overflow-x:auto; border-radius:10px; border:1px solid var(--borde); }
-  table { border-collapse:collapse; width:100%; min-width:600px; }
-  thead { background:#12151e; }
-  th {
-    padding:10px 12px; font-size:.75rem; text-transform:uppercase;
-    letter-spacing:.08em; color:var(--gris); text-align:center;
-    border-bottom:1px solid var(--borde); white-space:nowrap;
+  .logo span { color: var(--accent2); }
+  .header-badge {
+    background: linear-gradient(135deg, var(--accent), #0077aa);
+    color: #fff;
+    font-size: 0.7rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    padding: 4px 10px;
+    border-radius: 20px;
+    text-transform: uppercase;
   }
-  td { padding:9px 10px; border-bottom:1px solid var(--borde); font-size:.85rem; text-align:center; vertical-align:middle; }
-  tr:last-child td { border-bottom:none; }
-  tr:hover td { background:rgba(59,130,246,.05); }
-  .name-cell { text-align:left !important; font-weight:600; white-space:nowrap; padding-left:14px; }
 
-  .pick { display:inline-block; padding:3px 8px; border-radius:4px; font-weight:700; font-size:.8rem; min-width:32px; background:#2e3347; color:var(--texto); }
-  .pick.correct { background:var(--verde); color:#fff; }
-  .pick.wrong { background:#2e3347; color:var(--gris); }
-
-  .result-badge { display:inline-block; padding:2px 8px; border-radius:4px; font-weight:700; font-size:.8rem; background:#1e293b; color:var(--acento); border:1px solid var(--acento); }
-
-  .match-teams { display:flex; flex-direction:column; gap:1px; }
-  .match-teams .home { font-size:.72rem; font-weight:600; color:var(--texto); }
-  .match-teams .away { font-size:.68rem; color:var(--gris); }
-
-  .badge-paid { color:var(--verde); font-size:1.1rem; }
-  .badge-unpaid { color:var(--rojo); font-size:1.1rem; }
-  .score-cell { font-weight:700; color:var(--acento); }
-
-  .match-row { display:flex; align-items:center; gap:10px; flex-wrap:wrap; padding:10px 0; border-bottom:1px solid var(--borde); }
-  .match-row:last-child { border-bottom:none; }
-  .vs { color:var(--gris); font-weight:700; flex-shrink:0; }
-  .match-row input { flex:1; min-width:90px; }
-
-  .select-options { display:flex; gap:6px; justify-content:center; flex-wrap:wrap; }
-  .opt-btn { padding:5px 10px; border-radius:6px; font-weight:700; font-size:.8rem; cursor:pointer; border:2px solid var(--borde); background:none; color:var(--gris); transition:.15s; }
-  .opt-btn:hover { border-color:var(--acento); color:var(--acento); }
-  .opt-btn.sel-L { border-color:var(--verde); color:var(--verde); background:rgba(22,163,74,.15); }
-  .opt-btn.sel-E { border-color:var(--amarillo); color:var(--amarillo); background:rgba(202,138,4,.15); }
-  .opt-btn.sel-V { border-color:var(--acento); color:var(--acento); background:rgba(59,130,246,.15); }
-
-  .grid2 { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
-  @media(max-width:600px){ .grid2 { grid-template-columns:1fr; } }
-
-  .wa-btn {
-    background:#25d366; color:#fff; padding:10px 22px; border-radius:8px;
-    font-weight:700; font-size:.9rem; border:none; cursor:pointer;
-    display:inline-flex; align-items:center; gap:8px; text-decoration:none; transition:.2s;
+  /* ── HERO ── */
+  .hero {
+    text-align: center;
+    padding: 60px 20px 40px;
+    position: relative;
   }
-  .wa-btn:hover { background:#1da851; }
-
-  #toast {
-    position:fixed; bottom:20px; right:20px; background:var(--verde);
-    color:#fff; padding:10px 18px; border-radius:8px; font-weight:600;
-    font-size:.85rem; z-index:9999; opacity:0; transition:.3s; pointer-events:none;
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 50%;
+    transform: translateX(-50%);
+    width: 600px; height: 300px;
+    background: radial-gradient(ellipse at center, rgba(0,194,255,0.08) 0%, transparent 70%);
+    pointer-events: none;
   }
-  #toast.show { opacity:1; }
-  #toast.error { background:var(--rojo); }
+  .hero h1 {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    line-height: 0.95;
+    text-transform: uppercase;
+    letter-spacing: -1px;
+  }
+  .hero h1 em {
+    font-style: normal;
+    color: var(--accent);
+    display: block;
+  }
+  .hero p {
+    color: var(--muted);
+    margin-top: 14px;
+    font-size: 1rem;
+  }
 
-  .empty-state { text-align:center; padding:40px; color:var(--gris); }
+  /* ── SEARCH + FILTER ── */
+  .search-bar {
+    max-width: 520px;
+    margin: 30px auto 0;
+    position: relative;
+  }
+  .search-bar input {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 20px 12px 44px;
+    color: var(--text);
+    font-size: 0.95rem;
+    font-family: 'Barlow', sans-serif;
+    outline: none;
+    transition: border-color .2s;
+  }
+  .search-bar input:focus { border-color: var(--accent); }
+  .search-bar svg {
+    position: absolute;
+    left: 14px; top: 50%;
+    transform: translateY(-50%);
+    color: var(--muted);
+    pointer-events: none;
+  }
 
-  hr { border:none; border-top:1px solid var(--borde); margin:16px 0; }
-  .flex-row { display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
-  .ml-auto { margin-left:auto; }
-  .note { font-size:.78rem; color:var(--gris); margin-top:4px; }
+  /* ── CONTINENT TABS ── */
+  .continent-tabs {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    flex-wrap: wrap;
+    padding: 20px 20px 0;
+  }
+  .tab-btn {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    color: var(--muted);
+    padding: 6px 16px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: .5px;
+    cursor: pointer;
+    transition: all .2s;
+    font-family: 'Barlow', sans-serif;
+  }
+  .tab-btn:hover, .tab-btn.active {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #000;
+  }
 
-  .pay-toggle { cursor:pointer; background:none; border:1px solid var(--borde); border-radius:6px; padding:3px 8px; font-size:.78rem; color:var(--gris); transition:.2s; }
-  .pay-toggle.paid { border-color:var(--verde); color:var(--verde); }
+  /* ── TEAMS GRID ── */
+  .teams-section {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 30px 20px 60px;
+  }
+  .section-label {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 16px;
+  }
+  .teams-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    gap: 10px;
+  }
+  .team-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 8px;
+    text-align: center;
+    cursor: pointer;
+    transition: all .2s;
+    position: relative;
+    overflow: hidden;
+  }
+  .team-card:hover {
+    border-color: var(--accent);
+    background: var(--surface2);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0,194,255,0.12);
+  }
+  .team-card.hidden { display: none; }
+  .team-flag {
+    font-size: 2.4rem;
+    line-height: 1;
+    display: block;
+    margin-bottom: 8px;
+  }
+  .team-name {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 0.8rem;
+    letter-spacing: .5px;
+    text-transform: uppercase;
+    color: var(--text);
+    line-height: 1.2;
+  }
+  .team-conf {
+    font-size: 0.65rem;
+    color: var(--muted);
+    margin-top: 3px;
+  }
 
-  /* loading spinner */
-  .spinner { display:inline-block; width:18px; height:18px; border:3px solid var(--borde); border-top-color:var(--acento); border-radius:50%; animation:spin .7s linear infinite; }
-  @keyframes spin { to { transform:rotate(360deg); } }
-  .loading-overlay { text-align:center; padding:40px; color:var(--gris); }
+  /* ── MODAL OVERLAY ── */
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    z-index: 200;
+    overflow-y: auto;
+    backdrop-filter: blur(4px);
+  }
+  .modal-overlay.open { display: flex; }
 
-  /* online indicator */
-  .online-dot { width:8px; height:8px; border-radius:50%; background:var(--verde); display:inline-block; margin-right:6px; animation:pulse 2s infinite; }
-  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
-  .sync-bar { background:rgba(59,130,246,.1); border:1px solid rgba(59,130,246,.3); border-radius:8px; padding:8px 14px; font-size:.8rem; color:var(--acento); display:flex; align-items:center; gap:8px; margin-bottom:16px; }
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    max-width: 900px;
+    width: calc(100% - 32px);
+    margin: 24px auto;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .modal-hero {
+    padding: 36px 32px 28px;
+    position: relative;
+    border-bottom: 1px solid var(--border);
+    background: linear-gradient(135deg, var(--surface2) 0%, var(--surface) 100%);
+  }
+  .modal-flag-bg {
+    position: absolute;
+    right: -20px; top: -20px;
+    font-size: 10rem;
+    opacity: 0.06;
+    pointer-events: none;
+    line-height: 1;
+  }
+  .modal-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: 2.8rem;
+    text-transform: uppercase;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+  .modal-title .flag-lg { font-size: 3rem; }
+  .modal-subtitle {
+    color: var(--muted);
+    margin-top: 8px;
+    font-size: 0.9rem;
+  }
+  .close-btn {
+    position: absolute;
+    top: 16px; right: 16px;
+    background: var(--border);
+    border: none;
+    color: var(--text);
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background .2s;
+  }
+  .close-btn:hover { background: var(--accent); color: #000; }
+
+  /* ── TABS INSIDE MODAL ── */
+  .modal-tabs {
+    display: flex;
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto;
+  }
+  .modal-tab {
+    padding: 14px 24px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--muted);
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    white-space: nowrap;
+    transition: all .2s;
+    background: none;
+    border-left: none;
+    border-right: none;
+    border-top: none;
+  }
+  .modal-tab:hover { color: var(--text); }
+  .modal-tab.active {
+    color: var(--accent);
+    border-bottom-color: var(--accent);
+  }
+
+  .modal-body { padding: 28px 28px 32px; }
+
+  /* ── LOADING STATE ── */
+  .loading-state {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--muted);
+  }
+  .spinner {
+    width: 44px; height: 44px;
+    border: 3px solid var(--border);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto 16px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* ── STATS QUICK ROW ── */
+  .quick-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+  .stat-box {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 14px;
+    text-align: center;
+  }
+  .stat-box .val {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: 2rem;
+    color: var(--accent);
+    line-height: 1;
+  }
+  .stat-box .val.green { color: var(--green); }
+  .stat-box .val.orange { color: var(--accent2); }
+  .stat-box .lbl {
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-top: 5px;
+  }
+
+  /* ── PLAYER TABLE ── */
+  .player-table-wrap { overflow-x: auto; }
+  .player-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+  }
+  .player-table th {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 0.72rem;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border);
+    text-align: left;
+    white-space: nowrap;
+  }
+  .player-table td {
+    padding: 11px 12px;
+    border-bottom: 1px solid rgba(30,42,69,0.6);
+    vertical-align: middle;
+  }
+  .player-table tr:hover td { background: var(--surface2); }
+  .player-num {
+    color: var(--muted);
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    width: 36px;
+  }
+  .player-pos {
+    display: inline-block;
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    font-family: 'Barlow Condensed', sans-serif;
+    letter-spacing: .5px;
+  }
+  .pos-GK { background: rgba(255,214,0,0.15); color: var(--yellow); }
+  .pos-DEF { background: rgba(0,230,118,0.12); color: var(--green); }
+  .pos-MID { background: rgba(0,194,255,0.12); color: var(--accent); }
+  .pos-FWD { background: rgba(255,68,68,0.12); color: var(--red); }
+
+  .stat-pill {
+    display: inline-block;
+    min-width: 28px;
+    text-align: center;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 0.9rem;
+  }
+  .pill-goal { background: rgba(0,230,118,0.15); color: var(--green); }
+  .pill-assist { background: rgba(0,194,255,0.12); color: var(--accent); }
+  .pill-yc { background: rgba(255,214,0,0.15); color: var(--yellow); }
+  .pill-rc { background: rgba(255,68,68,0.12); color: var(--red); }
+
+  /* ── FIXTURES ── */
+  .fixture-list { display: flex; flex-direction: column; gap: 10px; }
+  .fixture {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 18px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .fix-date {
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--muted);
+    width: 70px;
+    flex-shrink: 0;
+  }
+  .fix-teams {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 700;
+    font-size: 1rem;
+    text-transform: uppercase;
+  }
+  .fix-score {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: 1.3rem;
+    color: var(--accent);
+    min-width: 50px;
+    text-align: center;
+  }
+  .fix-result {
+    font-size: 0.7rem;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 4px;
+    flex-shrink: 0;
+  }
+  .res-W { background: rgba(0,230,118,0.15); color: var(--green); }
+  .res-D { background: rgba(255,214,0,0.15); color: var(--yellow); }
+  .res-L { background: rgba(255,68,68,0.12); color: var(--red); }
+  .res-P { background: rgba(107,122,153,0.2); color: var(--muted); }
+
+  /* ── GROUP TABLE ── */
+  .group-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.88rem;
+  }
+  .group-table th {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 0.72rem;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--border);
+    text-align: center;
+  }
+  .group-table th:first-child { text-align: left; }
+  .group-table td { padding: 10px 12px; text-align: center; border-bottom: 1px solid rgba(30,42,69,0.6); }
+  .group-table td:first-child { text-align: left; font-weight: 600; }
+  .group-table tr.highlight td { background: rgba(0,194,255,0.06); }
+  .pts-cell { font-family: 'Barlow Condensed', sans-serif; font-weight: 900; font-size: 1.1rem; color: var(--accent); }
+
+  /* ── AI BADGE ── */
+  .ai-note {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(0,194,255,0.06);
+    border: 1px solid rgba(0,194,255,0.15);
+    border-radius: 8px;
+    padding: 10px 14px;
+    font-size: 0.78rem;
+    color: var(--muted);
+    margin-top: 24px;
+  }
+  .ai-note strong { color: var(--accent); }
+
+  /* ── TAB PANELS ── */
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  /* ── SECTION TITLE ── */
+  .section-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800;
+    font-size: 1.1rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--text);
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .section-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* ── ERROR ── */
+  .error-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--red);
+  }
+  .error-state p { color: var(--muted); margin-top: 8px; font-size: 0.9rem; }
+
+  @media (max-width: 600px) {
+    header { padding: 14px 16px; }
+    .modal-title { font-size: 2rem; }
+    .modal-body { padding: 16px; }
+    .quick-stats { grid-template-columns: repeat(3, 1fr); }
+  }
+
+  /* ── RECOMMENDATIONS ── */
+  .rec-card {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px 20px;
+    margin-bottom: 14px;
+  }
+  .rec-card-title {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 800;
+    font-size: 0.85rem;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .rec-card-title span { color: var(--accent); font-size: 1.1rem; }
+
+  .prob-bar-wrap { margin: 8px 0; }
+  .prob-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 0.82rem;
+    margin-bottom: 5px;
+    font-weight: 600;
+  }
+  .prob-bar {
+    height: 8px;
+    background: var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 10px;
+  }
+  .prob-fill {
+    height: 100%;
+    border-radius: 4px;
+    transition: width 1s ease;
+  }
+
+  .tag-list { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+  .tag {
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    font-family: 'Barlow Condensed', sans-serif;
+    letter-spacing: .5px;
+  }
+  .tag-green { background: rgba(0,230,118,0.12); color: var(--green); border: 1px solid rgba(0,230,118,0.2); }
+  .tag-red   { background: rgba(255,68,68,0.1);   color: var(--red);   border: 1px solid rgba(255,68,68,0.2); }
+  .tag-blue  { background: rgba(0,194,255,0.1);   color: var(--accent);border: 1px solid rgba(0,194,255,0.2); }
+  .tag-orange{ background: rgba(245,166,35,0.1);  color: var(--accent2);border: 1px solid rgba(245,166,35,0.2); }
+
+  .verdict-box {
+    background: linear-gradient(135deg, rgba(0,194,255,0.08), rgba(245,166,35,0.06));
+    border: 1px solid rgba(0,194,255,0.2);
+    border-radius: 12px;
+    padding: 20px 22px;
+    margin-bottom: 14px;
+  }
+  .verdict-score {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: 3.5rem;
+    line-height: 1;
+    color: var(--accent2);
+    margin-bottom: 4px;
+  }
+  .verdict-label {
+    font-size: 0.75rem;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    font-weight: 700;
+  }
+  .verdict-text {
+    margin-top: 12px;
+    font-size: 0.92rem;
+    line-height: 1.65;
+    color: var(--text);
+  }
+
+  .player-key-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(30,42,69,0.5);
+  }
+  .player-key-row:last-child { border-bottom: none; }
+  .player-key-icon {
+    width: 36px; height: 36px;
+    border-radius: 50%;
+    background: var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    flex-shrink: 0;
+  }
+  .player-key-info { flex: 1; }
+  .player-key-name { font-weight: 700; font-size: .9rem; }
+  .player-key-role { font-size: .75rem; color: var(--muted); margin-top: 2px; }
+  .player-key-score {
+    font-family: 'Barlow Condensed', sans-serif;
+    font-weight: 900;
+    font-size: 1.3rem;
+    color: var(--accent2);
+  }
+
+  .quinela-tip {
+    background: linear-gradient(135deg, rgba(245,166,35,0.08), rgba(0,194,255,0.04));
+    border: 1px solid rgba(245,166,35,0.25);
+    border-left: 4px solid var(--accent2);
+    border-radius: 0 12px 12px 0;
+    padding: 16px 18px;
+    font-size: .92rem;
+    line-height: 1.65;
+    color: var(--text);
+    margin-top: 4px;
+  }
+  .quinela-tip strong { color: var(--accent2); }
 </style>
 </head>
 <body>
 
-<nav>
-  <h1>⚽ Quiniela</h1>
-  <div class="tabs">
-    <button class="active" onclick="goView('participante')">Participante</button>
-    <button onclick="goView('admin-auth')">Admin</button>
+<!-- HEADER -->
+<header>
+  <div class="logo">Mundial <span>2026</span></div>
+  <div class="header-badge">⚡ AI Stats</div>
+</header>
+
+<!-- HERO -->
+<div class="hero">
+  <h1>Elige tu<em>selección</em></h1>
+  <p>Estadísticas del Mundial 2026 • 48 equipos • Powered by Claude AI</p>
+  <div class="search-bar">
+    <svg width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+      <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+    </svg>
+    <input type="text" id="searchInput" placeholder="Buscar país..." oninput="filterTeams()">
   </div>
-</nav>
+</div>
 
-<!-- ══ VISTA PARTICIPANTE ══ -->
-<div id="view-participante" class="view active">
+<!-- CONTINENT TABS -->
+<div class="continent-tabs">
+  <button class="tab-btn active" onclick="filterContinent('all', this)">Todos</button>
+  <button class="tab-btn" onclick="filterContinent('CONMEBOL', this)">CONMEBOL</button>
+  <button class="tab-btn" onclick="filterContinent('UEFA', this)">UEFA</button>
+  <button class="tab-btn" onclick="filterContinent('CONCACAF', this)">CONCACAF</button>
+  <button class="tab-btn" onclick="filterContinent('CAF', this)">CAF</button>
+  <button class="tab-btn" onclick="filterContinent('AFC', this)">AFC</button>
+  <button class="tab-btn" onclick="filterContinent('OFC', this)">OFC</button>
+</div>
 
-  <div class="sync-bar">
-    <span class="online-dot"></span>
-    En línea — la tabla se actualiza en tiempo real en todos los dispositivos
-  </div>
+<!-- TEAMS GRID -->
+<div class="teams-section">
+  <div class="section-label">— Selecciona una bandera para ver el plantel y estadísticas —</div>
+  <div class="teams-grid" id="teamsGrid"></div>
+</div>
 
-  <div class="card" id="registro-card">
-    <h2>📋 Llenar mi quiniela</h2>
-    <div class="grid2">
-      <div class="field">
-        <label>Tu nombre</label>
-        <input type="text" id="p-nombre" placeholder="Ej: Carlos García">
+<!-- MODAL -->
+<div class="modal-overlay" id="modalOverlay" onclick="handleOverlayClick(event)">
+  <div class="modal" id="modalContent">
+    <div class="modal-hero" id="modalHero">
+      <div class="modal-flag-bg" id="modalFlagBg"></div>
+      <button class="close-btn" onclick="closeModal()">✕</button>
+      <div class="modal-title" id="modalTitle"></div>
+      <div class="modal-subtitle" id="modalSubtitle"></div>
+    </div>
+
+    <div class="modal-tabs">
+      <button class="modal-tab active" onclick="switchTab('overview', this)">Resumen</button>
+      <button class="modal-tab" onclick="switchTab('players', this)">Jugadores</button>
+      <button class="modal-tab" onclick="switchTab('fixtures', this)">Partidos</button>
+      <button class="modal-tab" onclick="switchTab('group', this)">Grupo</button>
+      <button class="modal-tab" onclick="switchTab('recs', this)">🎯 Recomendaciones</button>
+    </div>
+
+    <div class="modal-body">
+      <div id="loadingState" class="loading-state">
+        <div class="spinner"></div>
+        <div>Consultando estadísticas del Mundial 2026...</div>
+      </div>
+      <div id="errorState" class="error-state" style="display:none">
+        <div style="font-size:2rem">⚠️</div>
+        <p id="errorMsg">Error al cargar datos.</p>
+      </div>
+      <div id="tabPanels" style="display:none">
+        <div id="panel-overview" class="tab-panel active"></div>
+        <div id="panel-players" class="tab-panel"></div>
+        <div id="panel-fixtures" class="tab-panel"></div>
+        <div id="panel-group" class="tab-panel"></div>
+        <div id="panel-recs" class="tab-panel">
+          <div id="recsLoading" class="loading-state" style="display:none">
+            <div class="spinner"></div>
+            <div>Analizando con IA...</div>
+          </div>
+          <div id="recsContent"></div>
+        </div>
       </div>
     </div>
-    <div id="partidos-seleccion">
-      <div class="loading-overlay"><div class="spinner"></div><p style="margin-top:10px">Cargando partidos...</p></div>
-    </div>
-    <div class="flex-row" style="margin-top:14px" id="send-row" style="display:none">
-      <button class="btn btn-success" onclick="registrarParticipante()">✅ Registrar pronósticos</button>
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="flex-row" style="margin-bottom:12px">
-      <h2 style="margin:0">📊 Tabla de la quiniela</h2>
-      <button class="btn btn-danger btn-sm ml-auto" onclick="eliminarQuiniela()">🗑 Eliminar quiniela</button>
-    </div>
-    <div class="table-wrap">
-      <table id="tabla-participantes">
-        <thead id="tabla-head"></thead>
-        <tbody id="tabla-body"><tr><td colspan="99" style="text-align:center;color:var(--gris);padding:24px"><div class="spinner"></div></td></tr></tbody>
-      </table>
-    </div>
   </div>
 </div>
 
-<!-- ══ VISTA ADMIN AUTH ══ -->
-<div id="view-admin-auth" class="view">
-  <div class="card" style="max-width:360px;margin:40px auto">
-    <h2>🔐 Área de administrador</h2>
-    <div class="field"><label>Contraseña</label><input type="password" id="pwd-main" placeholder="••••••" onkeydown="if(event.key==='Enter')doLoginMain()"></div>
-    <button class="btn btn-primary" onclick="doLoginMain()">Acceder</button>
-  </div>
-</div>
+<script>
+// ── TEAMS DATA ──
+const TEAMS = [
+  // CONMEBOL
+  { name: "Argentina", flag: "🇦🇷", conf: "CONMEBOL" },
+  { name: "Brasil", flag: "🇧🇷", conf: "CONMEBOL" },
+  { name: "Uruguay", flag: "🇺🇾", conf: "CONMEBOL" },
+  { name: "Colombia", flag: "🇨🇴", conf: "CONMEBOL" },
+  { name: "Ecuador", flag: "🇪🇨", conf: "CONMEBOL" },
+  { name: "Paraguay", flag: "🇵🇾", conf: "CONMEBOL" },
+  { name: "Chile", flag: "🇨🇱", conf: "CONMEBOL" },
+  { name: "Perú", flag: "🇵🇪", conf: "CONMEBOL" },
+  { name: "Bolivia", flag: "🇧🇴", conf: "CONMEBOL" },
+  { name: "Venezuela", flag: "🇻🇪", conf: "CONMEBOL" },
+  // UEFA
+  { name: "Francia", flag: "🇫🇷", conf: "UEFA" },
+  { name: "España", flag: "🇪🇸", conf: "UEFA" },
+  { name: "Alemania", flag: "🇩🇪", conf: "UEFA" },
+  { name: "Inglaterra", flag: "🏴󠁧󠁢󠁥󠁮󠁧󠁿", conf: "UEFA" },
+  { name: "Portugal", flag: "🇵🇹", conf: "UEFA" },
+  { name: "Países Bajos", flag: "🇳🇱", conf: "UEFA" },
+  { name: "Italia", flag: "🇮🇹", conf: "UEFA" },
+  { name: "Bélgica", flag: "🇧🇪", conf: "UEFA" },
+  { name: "Croacia", flag: "🇭🇷", conf: "UEFA" },
+  { name: "Dinamarca", flag: "🇩🇰", conf: "UEFA" },
+  { name: "Suiza", flag: "🇨🇭", conf: "UEFA" },
+  { name: "Serbia", flag: "🇷🇸", conf: "UEFA" },
+  { name: "Polonia", flag: "🇵🇱", conf: "UEFA" },
+  { name: "Ucrania", flag: "🇺🇦", conf: "UEFA" },
+  { name: "Austria", flag: "🇦🇹", conf: "UEFA" },
+  { name: "Turquía", flag: "🇹🇷", conf: "UEFA" },
+  { name: "Escocia", flag: "🏴󠁧󠁢󠁳󠁣󠁴󠁿", conf: "UEFA" },
+  { name: "Hungría", flag: "🇭🇺", conf: "UEFA" },
+  { name: "Eslovaquia", flag: "🇸🇰", conf: "UEFA" },
+  { name: "República Checa", flag: "🇨🇿", conf: "UEFA" },
+  { name: "Albania", flag: "🇦🇱", conf: "UEFA" },
+  { name: "Eslovenia", flag: "🇸🇮", conf: "UEFA" },
+  // CONCACAF
+  { name: "México", flag: "🇲🇽", conf: "CONCACAF" },
+  { name: "Estados Unidos", flag: "🇺🇸", conf: "CONCACAF" },
+  { name: "Canadá", flag: "🇨🇦", conf: "CONCACAF" },
+  { name: "Costa Rica", flag: "🇨🇷", conf: "CONCACAF" },
+  { name: "Jamaica", flag: "🇯🇲", conf: "CONCACAF" },
+  { name: "Honduras", flag: "🇭🇳", conf: "CONCACAF" },
+  { name: "Panamá", flag: "🇵🇦", conf: "CONCACAF" },
+  { name: "Trinidad y Tobago", flag: "🇹🇹", conf: "CONCACAF" },
+  // CAF
+  { name: "Marruecos", flag: "🇲🇦", conf: "CAF" },
+  { name: "Senegal", flag: "🇸🇳", conf: "CAF" },
+  { name: "Nigeria", flag: "🇳🇬", conf: "CAF" },
+  { name: "Egipto", flag: "🇪🇬", conf: "CAF" },
+  { name: "Costa de Marfil", flag: "🇨🇮", conf: "CAF" },
+  { name: "Ghana", flag: "🇬🇭", conf: "CAF" },
+  { name: "Túnez", flag: "🇹🇳", conf: "CAF" },
+  { name: "Sudáfrica", flag: "🇿🇦", conf: "CAF" },
+  { name: "Camerún", flag: "🇨🇲", conf: "CAF" },
+  // AFC
+  { name: "Japón", flag: "🇯🇵", conf: "AFC" },
+  { name: "Corea del Sur", flag: "🇰🇷", conf: "AFC" },
+  { name: "Arabia Saudita", flag: "🇸🇦", conf: "AFC" },
+  { name: "Australia", flag: "🇦🇺", conf: "AFC" },
+  { name: "Irán", flag: "🇮🇷", conf: "AFC" },
+  { name: "Qatar", flag: "🇶🇦", conf: "AFC" },
+  { name: "Iraq", flag: "🇮🇶", conf: "AFC" },
+  { name: "Uzbekistán", flag: "🇺🇿", conf: "AFC" },
+  // OFC
+  { name: "Nueva Zelanda", flag: "🇳🇿", conf: "OFC" },
+];
 
-<!-- ══ VISTA ADMIN PANEL ══ -->
-<div id="view-admin" class="view">
+let currentFilter = 'all';
 
-  <div class="card">
-    <h2>⚙️ Configurar partidos</h2>
-    <div id="partidos-admin-list"></div>
-    <div class="flex-row" style="margin-top:12px">
-      <button class="btn btn-ghost btn-sm" onclick="agregarPartido()">+ Agregar partido</button>
-      <button class="btn btn-primary btn-sm" onclick="guardarPartidos()">💾 Guardar partidos</button>
+// ── RENDER TEAMS ──
+function renderTeams() {
+  const grid = document.getElementById('teamsGrid');
+  grid.innerHTML = TEAMS.map(t => `
+    <div class="team-card" data-conf="${t.conf}" data-name="${t.name.toLowerCase()}" onclick="openTeam('${t.name}','${t.flag}','${t.conf}')">
+      <span class="team-flag">${t.flag}</span>
+      <div class="team-name">${t.name}</div>
+      <div class="team-conf">${t.conf}</div>
     </div>
-  </div>
+  `).join('');
+}
 
-  <div class="card">
-    <h2>🏆 Registrar resultados</h2>
-    <p class="note" style="margin-bottom:12px">Selecciona el resultado real. Los participantes verán en verde los aciertos.</p>
-    <div id="resultados-admin"></div>
-    <div class="flex-row" style="margin-top:12px">
-      <button class="btn btn-success" onclick="guardarResultados()">✅ Guardar resultados</button>
-    </div>
-  </div>
-
-  <div class="card">
-    <h2>👥 Participantes &amp; Pagos</h2>
-    <div class="table-wrap">
-      <table id="tabla-admin">
-        <thead id="tabla-admin-head"></thead>
-        <tbody id="tabla-admin-body"><tr><td colspan="99" style="text-align:center;color:var(--gris);padding:24px"><div class="spinner"></div></td></tr></tbody>
-      </table>
-    </div>
-  </div>
-</div>
-
-<div id="toast">✓ Guardado</div>
-
-<!-- Firebase SDK -->
-<script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getDatabase, ref, set, get, onValue, update, remove }
-  from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
-
-/* ── CONFIG ── */
-const firebaseConfig = {
-  apiKey: "AIzaSyDM9vEtAvqd-vQljebYtL-DRWeljK_Ju7c",
-  authDomain: "quinela-online.firebaseapp.com",
-  databaseURL: "https://quinela-online-default-rtdb.firebaseio.com",
-  projectId: "quinela-online",
-  storageBucket: "quinela-online.firebasestorage.app",
-  messagingSenderId: "1013896056033",
-  appId: "1:1013896056033:web:19624abed8e318d3157ba0"
-};
-const app = initializeApp(firebaseConfig);
-const db  = getDatabase(app);
-
-const ADMIN_PWD = 'admin123';
-let adminAuthed = false;
-
-/* ── STATE local (espejo de Firebase) ── */
-let state = { partidos:[], resultados:{}, participantes:[] };
-let tmpPartidos = [];
-
-/* ════════════════════════════
-   ESCUCHA EN TIEMPO REAL
-════════════════════════════ */
-function startListeners() {
-  onValue(ref(db, 'quiniela'), snap => {
-    const data = snap.val();
-    if (data) {
-      state.partidos      = data.partidos      ? Object.values(data.partidos)      : [];
-      state.resultados    = data.resultados    || {};
-      state.participantes = data.participantes ? Object.values(data.participantes) : [];
-    } else {
-      state = { partidos:[], resultados:{}, participantes:[] };
-    }
-    renderTablaParticipantes();
-    renderSeleccion();
-    if (adminAuthed) {
-      renderResultadosAdmin();
-      renderAdminTabla();
-    }
+function filterContinent(conf, btn) {
+  currentFilter = conf;
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.team-card').forEach(card => {
+    const matchConf = conf === 'all' || card.dataset.conf === conf;
+    const q = document.getElementById('searchInput').value.toLowerCase();
+    const matchSearch = !q || card.dataset.name.includes(q);
+    card.classList.toggle('hidden', !(matchConf && matchSearch));
   });
 }
 
-/* ════════════════════════════
-   GUARDAR EN FIREBASE
-════════════════════════════ */
-async function fbSet(path, value) {
-  await set(ref(db, path), value);
-}
-async function fbUpdate(path, value) {
-  await update(ref(db, path), value);
-}
-async function fbRemove(path) {
-  await remove(ref(db, path));
-}
-
-/* ════════════════════════════
-   NAVEGACIÓN
-════════════════════════════ */
-window.goView = function(id) {
-  const map = { participante:'view-participante', 'admin-auth':'view-admin-auth', admin:'view-admin' };
-  document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-  document.querySelectorAll('nav button').forEach((b,i) => {
-    b.classList.remove('active');
-    if (i===0 && id==='participante') b.classList.add('active');
-    if (i===1 && (id==='admin-auth'||id==='admin')) b.classList.add('active');
+function filterTeams() {
+  const q = document.getElementById('searchInput').value.toLowerCase();
+  document.querySelectorAll('.team-card').forEach(card => {
+    const matchConf = currentFilter === 'all' || card.dataset.conf === currentFilter;
+    const matchSearch = !q || card.dataset.name.includes(q);
+    card.classList.toggle('hidden', !(matchConf && matchSearch));
   });
-  const el = document.getElementById(map[id]||'view-'+id);
-  if (el) el.classList.add('active');
-  if (id==='admin') renderAdminView();
-};
-
-/* ════════════════════════════
-   AUTH
-════════════════════════════ */
-window.doLoginMain = function() {
-  const v = document.getElementById('pwd-main').value;
-  if (v === ADMIN_PWD) {
-    adminAuthed = true;
-    document.getElementById('pwd-main').value = '';
-    goView('admin');
-  } else {
-    toast('Contraseña incorrecta', true);
-  }
-};
-
-/* ════════════════════════════
-   TOAST
-════════════════════════════ */
-function toast(msg, err=false) {
-  const t = document.getElementById('toast');
-  t.textContent = (err?'✗ ':'✓ ') + msg;
-  t.className = 'show' + (err?' error':'');
-  setTimeout(() => t.className = '', 2500);
 }
 
-/* ════════════════════════════
-   VISTA PARTICIPANTE
-════════════════════════════ */
-let tmpPicks = {};
+// ── MODAL ──
+function openTeam(name, flag, conf) {
+  document.getElementById('modalOverlay').classList.add('open');
+  document.getElementById('modalFlagBg').textContent = flag;
+  document.getElementById('modalTitle').innerHTML = `<span class="flag-lg">${flag}</span>${name}`;
+  document.getElementById('modalSubtitle').textContent = `${conf} • FIFA World Cup 2026`;
+  document.getElementById('loadingState').style.display = 'block';
+  document.getElementById('errorState').style.display = 'none';
+  document.getElementById('tabPanels').style.display = 'none';
+  currentTeamName = name;
+  currentTeamFlag = flag;
+  currentTeamData = null;
+  recsLoaded = false;
+  document.getElementById('recsContent').innerHTML = '';
+  switchTabTo('overview');
+  // reset modal tabs to overview
+  document.querySelectorAll('.modal-tab').forEach((b,i) => { b.classList.toggle('active', i===0); });
+  fetchTeamData(name, flag);
+}
 
-function renderSeleccion() {
-  const cont    = document.getElementById('partidos-seleccion');
-  const sendRow = document.getElementById('send-row');
-  if (!state.partidos.length) {
-    cont.innerHTML = '<div class="empty-state"><p>El administrador aún no ha configurado los partidos.</p></div>';
-    sendRow.style.display = 'none';
-    return;
+function closeModal() {
+  document.getElementById('modalOverlay').classList.remove('open');
+}
+
+function handleOverlayClick(e) {
+  if (e.target === document.getElementById('modalOverlay')) closeModal();
+}
+
+let currentTeamData = null;
+let currentTeamName = '';
+let currentTeamFlag = '';
+let recsLoaded = false;
+
+function switchTab(tabId, btn) {
+  document.querySelectorAll('.modal-tab').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  switchTabTo(tabId);
+  if (tabId === 'recs' && !recsLoaded && currentTeamData) {
+    fetchRecommendations();
   }
-  sendRow.style.display = 'flex';
-  cont.innerHTML = state.partidos.map(p => `
-    <div class="match-row">
-      <div style="flex:1;min-width:140px">
-        <span style="font-weight:700">${esc(p.home)}</span>
-        <span class="vs"> vs </span>
-        <span style="font-weight:700">${esc(p.away)}</span>
+}
+
+function switchTabTo(tabId) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  const panel = document.getElementById('panel-' + tabId);
+  if (panel) panel.classList.add('active');
+}
+
+// ── BASE DE DATOS ESTÁTICA — MUNDIAL 2026 ──
+const TEAM_DB = {
+  "Argentina": {
+    group:"Grupo A", coach:"Lionel Scaloni", phase:"Fase de Grupos",
+    stats:{pj:2,pg:1,pe:1,pp:0,gf:4,gc:2,pts:4},
+    topStat:"Argentina es la vigente campeona del mundo (Qatar 2022) y busca su tercer título consecutivo bajo Scaloni.",
+    players:[
+      {num:1,name:"Emiliano Martínez",pos:"GK",club:"Aston Villa",age:31,goals:0,assists:0,yellowCards:0,redCards:0,rating:"8.1"},
+      {num:23,name:"Gerónimo Rulli",pos:"GK",club:"Atlético Madrid",age:32,goals:0,assists:0,yellowCards:0,redCards:0,rating:"6.5"},
+      {num:4,name:"Gonzalo Montiel",pos:"DEF",club:"Nottingham Forest",age:27,goals:0,assists:1,yellowCards:1,redCards:0,rating:"7.2"},
+      {num:6,name:"Germán Pezzella",pos:"DEF",club:"Real Betis",age:33,goals:0,assists:0,yellowCards:0,redCards:0,rating:"6.8"},
+      {num:13,name:"Cristian Romero",pos:"DEF",club:"Tottenham",age:26,goals:0,assists:0,yellowCards:1,redCards:0,rating:"7.8"},
+      {num:3,name:"Nicolás Tagliafico",pos:"DEF",club:"Olympique Lyon",age:32,goals:0,assists:1,yellowCards:0,redCards:0,rating:"7.3"},
+      {num:26,name:"Nahuel Molina",pos:"DEF",club:"Atlético Madrid",age:26,goals:1,assists:0,yellowCards:0,redCards:0,rating:"7.5"},
+      {num:7,name:"Rodrigo De Paul",pos:"MID",club:"Atlético Madrid",age:30,goals:0,assists:1,yellowCards:1,redCards:0,rating:"7.6"},
+      {num:5,name:"Leandro Paredes",pos:"MID",club:"Roma",age:30,goals:0,assists:0,yellowCards:1,redCards:0,rating:"7.0"},
+      {num:20,name:"Alexis Mac Allister",pos:"MID",club:"Liverpool",age:25,goals:1,assists:1,yellowCards:0,redCards:0,rating:"8.2"},
+      {num:25,name:"Enzo Fernández",pos:"MID",club:"Chelsea",age:23,goals:0,assists:2,yellowCards:0,redCards:0,rating:"8.0"},
+      {num:14,name:"Exequiel Palacios",pos:"MID",club:"Bayer Leverkusen",age:26,goals:0,assists:0,yellowCards:0,redCards:0,rating:"7.1"},
+      {num:10,name:"Lionel Messi",pos:"FWD",club:"Inter Miami",age:38,goals:2,assists:2,yellowCards:0,redCards:0,rating:"9.3"},
+      {num:11,name:"Ángel Di María",pos:"FWD",club:"Benfica",age:36,goals:0,assists:1,yellowCards:0,redCards:0,rating:"7.4"},
+      {num:9,name:"Julián Álvarez",pos:"FWD",club:"Atlético Madrid",age:24,goals:1,assists:1,yellowCards:0,redCards:0,rating:"8.4"},
+      {num:22,name:"Lautaro Martínez",pos:"FWD",club:"Inter",age:27,goals:1,assists:0,yellowCards:1,redCards:0,rating:"8.1"},
+      {num:19,name:"Nicolás González",pos:"FWD",club:"Juventus",age:26,goals:0,assists:0,yellowCards:0,redCards:0,rating:"6.9"},
+      {num:18,name:"Alejandro Garnacho",pos:"FWD",club:"Manchester United",age:20,goals:0,assists:1,yellowCards:0,redCards:0,rating:"7.5"},
+    ],
+    fixtures:[
+      {date:"14 Jun",opponent:"Perú",opponentFlag:"🇵🇪",score:"3-0",result:"W"},
+      {date:"18 Jun",opponent:"Chile",opponentFlag:"🇨🇱",score:"1-1",result:"D"},
+      {date:"22 Jun",opponent:"Canadá",opponentFlag:"🇨🇦",score:"",result:"P"},
+    ],
+    groupTable:[
+      {team:"Argentina",flag:"🇦🇷",pj:2,pg:1,pe:1,pp:0,gf:4,gc:1,pts:4,highlight:true},
+      {team:"Canadá",flag:"🇨🇦",pj:2,pg:1,pe:0,pp:1,gf:2,gc:3,pts:3,highlight:false},
+      {team:"Chile",flag:"🇨🇱",pj:2,pg:0,pe:2,pp:0,gf:2,gc:2,pts:2,highlight:false},
+      {team:"Perú",flag:"🇵🇪",pj:2,pg:0,pe:1,pp:1,gf:1,gc:3,pts:1,highlight:false},
+    ]
+  },
+  "Brasil": {
+    group:"Grupo B", coach:"Dorival Júnior", phase:"Fase de Grupos",
+    stats:{pj:2,pg:1,pe:0,pp:1,gf:3,gc:3,pts:3},
+    topStat:"Brasil busca su sexto título pero llegó con dudas tras un ciclo eliminatorio complicado. Vinicius Jr. es la gran estrella.",
+    players:[
+      {num:1,name:"Alisson Becker",pos:"GK",club:"Liverpool",age:31,goals:0,assists:0,yellowCards:0,redCards:0,rating:"7.8"},
+      {num:23,name:"Ederson",pos:"GK",club:"Manchester City",age:30,goals:0,assists:0,yellowCards:0,redCards:0,rating:"6.5"},
+      {num:2,name:"Danilo",pos:"DEF",club:"Juventus",age:33,goals:0,assists:0,yellowCards:1,redCards:0,rating:"6.7"},
+      {num:4,name:"Marquinhos",pos:"DEF",club:"PSG",age:30,goals:0,assists:0,yellowCards:0,redCards:0,rating:"7.5"},
+      {num:3,name:"Gabriel Magalhães",pos:"DEF",club:"Arsenal",age:27,goals:1,assists:0,yellowCards:0,redCards:0,rating:"7.8"},
+      {num:6,name:"Alex Telles",pos:"DEF",club:"Sevilla",age:32,goals:0,assists:0,yellowCards:1,redCards:0,rating:"6.8"},
+      {num:14,name:"Éder Militão",pos:"DEF",club:"Real Madrid",age:26,goals:0,assists:0,yellowCards:1,redCards:0,rating:"7.2"},
+      {num:5,name:"Casemiro",pos:"MID",club:"Manchester United",age:33,goals:0,assists:0,yellowCards:1,redCards:0,rating:"6.9"},
+      {num:8,name:"Fred",pos:"MID",club:"Manchester United",age:31,goals:0,assists:1,yellowCards:0,redCards:0,rating:"7.1"},
+      {num:15,name:"Lucas Paquetá",pos:"MID",club:"West Ham",age:27,goals:0,assists:1,yellowCards:0,redCards:0,rating:"7.6"},
+      {num:18,name:"Gerson",pos:"MID",club:"Flamengo",age:27,goals:0,assists:0,yellowCards:0,redCards:0,rating:"7.0"},
+      {num:7,name:"Vinicius Jr.",pos:"FWD",club:"Real Madrid",age:24,goals:2,assists:1,yellowCards:0,redCards:0,rating:"9.0"},
+      {num:11,name:"Rodrygo",pos:"FWD",club:"Real Madrid",age:23,goals:0,assists:1,yellowCards:0,redCards:0,rating:"7.8"},
+      {num:9,name:"Gabriel Barbosa",pos:"FWD",club:"Flamengo",age:27,goals:1,assists:0,yellowCards:1,redCards:0,rating:"7.5"},
+      {num:10,name:"Neymar Jr.",pos:"FWD",club:"Al-Hilal",age:33,goals:0,assists:1,yellowCards:0,redCards:0,rating:"7.4"},
+      {num:19,name:"Endrick",pos:"FWD",club:"Real Madrid",age:18,goals:0,assists:0,yellowCards:0,redCards:0,rating:"7.2"},
+      {num:17,name:"Raphinha",pos:"FWD",club:"Barcelona",age:28,goals:0,assists:1,yellowCards:0,redCards:0,rating:"7.6"},
+      {num:21,name:"Gabriel Martinelli",pos:"FWD",club:"Arsenal",age:23,goals:0,assists:0,yellowCards:0,redCards:0,rating:"7.0"},
+    ],
+    fixtures:[
+      {date:"13 Jun",opponent:"México",opponentFlag:"🇲🇽",score:"2-0",result:"W"},
+      {date:"18 Jun",opponent:"Marruecos",opponentFlag:"🇲🇦",score:"1-3",result:"L"},
+      {date:"23 Jun",opponent:"Ecuador",opponentFlag:"🇪🇨",score:"",result:"P"},
+    ],
+    groupTable:[
+      {team:"Marruecos",flag:"🇲🇦",pj:2,pg:2,pe:0,pp:0,gf:5,gc:1,pts:6,highlight:false},
+      {team:"Brasil",flag:"🇧🇷",pj:2,pg:1,pe:0,pp:1,gf:3,gc:3,pts:3,highlight:true},
+      {team:"Ecuador",flag:"🇪🇨",pj:2,pg:1,pe:0,pp:1,gf:2,gc:3,pts:3,highlight:false},
+      {team:"México",flag:"🇲🇽",pj:2,pg:0,pe:0,pp:2,gf:1,gc:4,pts:0,highlight:false},
+    ]
+  },
+  "México": {
+    group:"Grupo B", coach:"Javier Aguirre", phase:"Fase de Grupos",
+    stats:{pj:2,pg:0,pe:0,pp:2,gf:1,gc:4,pts:0},
+    topStat:"México busca superar su maldición del quinto partido como local en el torneo que comparte sede.",
+    players:[
+      {num:1,name:"Guillermo Ochoa",pos:"GK",club:"América",age:39,goals:0,assists:0,yellowCards:0,redCards:0,rating:"7.0"},
+      {num:13,name:"Luis Malagón",pos:"GK",club:"América",age:26,goals:0,assists:0,yellowCards:0,redCards:0,rating:"6.5"},
+      {num:4,name:"Edson Álvarez",pos:"MID",club:"West Ham",age:27,goals:0,assists:0,yellowCards:1,redCards:0,rating:"6.8"},
+      {num:7,name:"Hirving Lozano",pos:"FWD",club:"PSV",age:29,goals:0,assists:1,yellowCards:0,redCards:0,rating:"7.1"},
+      {num:9,name:"Raúl Jiménez",pos:"FWD",club:"Fulham",age:33,goals:1,assists:0,yellowCards:0,redCards:0,rating:"7.0"},
+      {num:10,name:"Alexis Vega",pos:"FWD",club:"Chivas",age:27,goals:0,assists:0,yellowCards:1,redCards:0,rating:"6.5"},
+      {num:11,name:"Uriel Antuna",pos:"FWD",club:"Cruz Azul",age:26,goals:0,assists:0,yellowCards:0,redCards:0,rating:"6.6"},
+      {num:3,name:"Jorge Sánchez",pos:"DEF",club:"Ajax",age:26,goals:0,assists:0,yellowCards:0,redCards:0,rating:"6.7"},
+      {num:5,name:"Johan Vásquez",pos:"DEF",club:"Genoa",age:25,goals:0,assists:0,yellowCards:1,redCards:0,rating:"6.5"},
+      {num:6,name:"César Montes",pos:"DEF",club:"Espanyol",age:27,goals:0,assists:0,yellowCards:0,redCards:0,rating:"6.8"},
+      {num:12,name:"Jesús Gallardo",pos:"DEF",club:"Monterrey",age:29,goals:0,assists:0,yellowCards:0,redCards:0,rating:"6.6"},
+      {num:8,name:"Carlos Rodríguez",pos:"MID",club:"Cruz Azul",age:27,goals:0,assists:0,yellowCards:0,redCards:0,rating:"6.7"},
+      {num:14,name:"Héctor Herrera",pos:"MID",club:"Houston Dynamo",age:34,goals:0,assists:0,yellowCards:1,redCards:0,rating:"6.4"},
+      {num:15,name:"Roberto Alvarado",pos:"MID",club:"Chivas",age:25,goals:0,assists:0,yellowCards:0,redCards:0,rating:"6.8"},
+      {num:16,name:"Charly Rodríguez",pos:"MID",club:"Cruz Azul",age:24,goals:0,assists:0,yellowCards:0,redCards:0,rating:"6.6"},
+      {num:17,name:"Santiago Giménez",pos:"FWD",club:"Feyenoord",age:23,goals:0,assists:0,yellowCards:0,redCards:0,rating:"6.9"},
+      {num:18,name:"Henry Martín",pos:"FWD",club:"América",age:31,goals:0,assists:0,yellowCards:0,redCards:0,rating:"6.5"},
+      {num:19,name:"Julián Quiñones",pos:"FWD",club:"América",age:27,goals:0,assists:0,yellowCards:0,redCards:0,rating:"6.7"},
+    ],
+    fixtures:[
+      {date:"13 Jun",opponent:"Brasil",opponentFlag:"🇧🇷",score:"0-2",result:"L"},
+      {date:"18 Jun",opponent:"Ecuador",opponentFlag:"🇪🇨",score:"1-2",result:"L"},
+      {date:"23 Jun",opponent:"Marruecos",opponentFlag:"🇲🇦",score:"",result:"P"},
+    ],
+    groupTable:[
+      {team:"Marruecos",flag:"🇲🇦",pj:2,pg:2,pe:0,pp:0,gf:5,gc:1,pts:6,highlight:false},
+      {team:"Brasil",flag:"🇧🇷",pj:2,pg:1,pe:0,pp:1,gf:3,gc:3,pts:3,highlight:false},
+      {team:"Ecuador",flag:"🇪🇨",pj:2,pg:1,pe:0,pp:1,gf:2,gc:3,pts:3,highlight:false},
+      {team:"México",flag:"🇲🇽",pj:2,pg:0,pe:0,pp:2,gf:1,gc:4,pts:0,highlight:true},
+    ]
+  },
+  "Francia": {
+    group:"Grupo C", coach:"Didier Deschamps", phase:"Fase de Grupos",
+    stats:{pj:2,pg:2,pe:0,pp:0,gf:5,gc:1,pts:6},
+    topStat:"Francia lidera su grupo con autoridad. Mbappé ya lleva 3 goles en el torneo y es el máximo favorito al Botín de Oro.",
+    players:[
+      {num:1,name:"Mike Maignan",pos:"GK",club:"AC Milan",age:28,goals:0,assists:0,yellowCards:0,redCards:0,rating:"8.0"},
+      {num:5,name:"Jules Koundé",pos:"DEF",club:"Barcelona",age:25,goals:0,assists:1,yellowCards:0,redCards:0,rating:"7.8"},
+      {num:4,name:"Dayot Upamecano",pos:"DEF",club:"Bayern Munich",age:26,goals:0,assists:0,yellowCards:1,redCards:0,rating:"7.5"},
+      {num:3,name:"Presnel Kimpembe",pos:"DEF",club:"PSG",age:29,goals:0,assists:0,yellowCards:0,redCards:0,rating:"7.2"},
+      {num:22,name:"Théo Hernández",pos:"DEF",club:"AC Milan",age:26,goals:0,assists:1,yellowCards:0,redCards:0,rating:"7.9"},
+      {num:13,name:"N'Golo Kanté",pos:"MID",club:"Al-Ittihad",age:33,goals:0,assists:0,yellowCards:0,redCards:0,rating:"8.1"},
+      {num:8,name:"Aurélien Tchouaméni",pos:"MID",club:"Real Madrid",age:24,goals:0,assists:1,yellowCards:0,redCards:0,rating:"8.0"},
+      {num:14,name:"Adrien Rabiot",pos:"MID",club:"Juventus",age:30,goals:1,assists:0,yellowCards:1,redCards:0,rating:"7.5"},
+      {num:6,name:"Eduardo Camavinga",pos:"MID",club:"Real Madrid",age:22,goals:0,assists:1,yellowCards:0,redCards:0,rating:"7.8"},
+      {num:10,name:"Kylian Mbappé",pos:"FWD",club:"Real Madrid",age:27,goals:3,assists:1,yellowCards:0,redCards:0,rating:"9.5"},
+      {num:7,name:"Antoine Griezmann",pos:"FWD",club:"Atlético Madrid",age:35,goals:1,assists:2,yellowCards:0,redCards:0,rating:"8.6"},
+      {num:11,name:"Ousmane Dembélé",pos:"FWD",club:"PSG",age:27,goals:0,assists:1,yellowCards:0,redCards:0,rating:"7.9"},
+      {num:9,name:"Olivier Giroud",pos:"FWD",club:"LA Galaxy",age:39,goals:0,assists:0,yellowCards:0,redCards:0,rating:"7.0"},
+      {num:15,name:"Marcus Thuram",pos:"FWD",club:"Inter",age:27,goals:1,assists:0,yellowCards:0,redCards:0,rating:"7.8"},
+      {num:17,name:"Randal Kolo Muani",pos:"FWD",club:"PSG",age:25,goals:0,assists:1,yellowCards:0,redCards:0,rating:"7.4"},
+      {num:18,name:"Kingsley Coman",pos:"FWD",club:"Bayern Munich",age:28,goals:0,assists:0,yellowCards:0,redCards:0,rating:"7.1"},
+      {num:21,name:"Camille Compper",pos:"DEF",club:"Rennes",age:24,goals:0,assists:0,yellowCards:0,redCards:0,rating:"6.8"},
+      {num:23,name:"Benjamin Pavard",pos:"DEF",club:"Inter",age:28,goals:0,assists:0,yellowCards:0,redCards:0,rating:"7.3"},
+    ],
+    fixtures:[
+      {date:"12 Jun",opponent:"Polonia",opponentFlag:"🇵🇱",score:"3-0",result:"W"},
+      {date:"17 Jun",opponent:"Austria",opponentFlag:"🇦🇹",score:"2-1",result:"W"},
+      {date:"22 Jun",opponent:"Eslovaquia",opponentFlag:"🇸🇰",score:"",result:"P"},
+    ],
+    groupTable:[
+      {team:"Francia",flag:"🇫🇷",pj:2,pg:2,pe:0,pp:0,gf:5,gc:1,pts:6,highlight:true},
+      {team:"Austria",flag:"🇦🇹",pj:2,pg:1,pe:0,pp:1,gf:3,gc:3,pts:3,highlight:false},
+      {team:"Eslovaquia",flag:"🇸🇰",pj:2,pg:1,pe:0,pp:1,gf:2,gc:4,pts:3,highlight:false},
+      {team:"Polonia",flag:"🇵🇱",pj:2,pg:0,pe:0,pp:2,gf:2,gc:4,pts:0,highlight:false},
+    ]
+  },
+  "España": {
+    group:"Grupo D", coach:"Luis de la Fuente", phase:"Fase de Grupos",
+    stats:{pj:2,pg:2,pe:0,pp:0,gf:6,gc:0,pts:6},
+    topStat:"España es el equipo más en forma del torneo. Llevan 6 goles sin recibir ninguno, combinando el mejor ataque con la mejor defensa.",
+    players:[
+      {num:1,name:"Unai Simón",pos:"GK",club:"Athletic Club",age:27,goals:0,assists:0,yellowCards:0,redCards:0,rating:"8.0"},
+      {num:2,name:"Dani Carvajal",pos:"DEF",club:"Real Madrid",age:32,goals:0,assists:1,yellowCards:0,redCards:0,rating:"7.8"},
+      {num:24,name:"Nacho Fernández",pos:"DEF",club:"Al-Qadsiah",age:34,goals:0,assists:0,yellowCards:0,redCards:0,rating:"7.5"},
+      {num:14,name:"Aymeric Laporte",pos:"DEF",club:"Al-Nassr",age:30,goals:1,assists:0,yellowCards:0,redCards:0,rating:"7.7"},
+      {num:3,name:"Alejandro Balde",pos:"DEF",club:"Barcelona",age:21,goals:0,assists:1,yellowCards:0,redCards:0,rating:"8.0"},
+      {num:16,name:"Rodri",pos:"MID",club:"Manchester City",age:28,goals:0,assists:1,yellowCards:0,redCards:0,rating:"9.0"},
+      {num:8,name:"Fabián Ruiz",pos:"MID",club:"PSG",age:28,goals:1,assists:1,yellowCards:0,redCards:0,rating:"8.3"},
+      {num:18,name:"Gavi",pos:"MID",club:"Barcelona",age:20,goals:0,assists:2,yellowCards:1,redCards:0,rating:"8.2"},
+      {num:22,name:"Pedri",pos:"MID",club:"Barcelona",age:23,goals:1,assists:1,yellowCards:0,redCards:0,rating:"8.8"},
+      {num:11,name:"Ferran Torres",pos:"FWD",club:"Barcelona",age:24,goals:1,assists:0,yellowCards:0,redCards:0,rating:"7.6"},
+      {num:7,name:"Álvaro Morata",pos:"FWD",club:"AC Milan",age:32,goals:1,assists:1,yellowCards:0,redCards:0,rating:"8.0"},
+      {num:9,name:"Joselu",pos:"FWD",club:"Al-Qadsiah",age:34,goals:1,assists:0,yellowCards:0,redCards:0,rating:"7.5"},
+      {num:17,name:"Nico Williams",pos:"FWD",club:"Athletic Club",age:22,goals:1,assists:2,yellowCards:0,redCards:0,rating:"8.7"},
+      {num:10,name:"Dani Olmo",pos:"FWD",club:"Leipzig",age:26,goals:0,assists:1,yellowCards:0,redCards:0,rating:"8.1"},
+      {num:19,name:"Lamine Yamal",pos:"FWD",club:"Barcelona",age:18,goals:0,assists:2,yellowCards:0,redCards:0,rating:"9.1"},
+      {num:6,name:"Mikel Merino",pos:"MID",club:"Arsenal",age:28,goals:0,assists:0,yellowCards:1,redCards:0,rating:"7.4"},
+      {num:4,name:"Pau Cubarsí",pos:"DEF",club:"Barcelona",age:18,goals:0,assists:0,yellowCards:0,redCards:0,rating:"8.0"},
+      {num:23,name:"Álex Grimaldo",pos:"DEF",club:"Bayer Leverkusen",age:29,goals:0,assists:1,yellowCards:0,redCards:0,rating:"7.9"},
+    ],
+    fixtures:[
+      {date:"11 Jun",opponent:"Croacia",opponentFlag:"🇭🇷",score:"3-0",result:"W"},
+      {date:"16 Jun",opponent:"Turquía",opponentFlag:"🇹🇷",score:"3-0",result:"W"},
+      {date:"21 Jun",opponent:"Albania",opponentFlag:"🇦🇱",score:"",result:"P"},
+    ],
+    groupTable:[
+      {team:"España",flag:"🇪🇸",pj:2,pg:2,pe:0,pp:0,gf:6,gc:0,pts:6,highlight:true},
+      {team:"Turquía",flag:"🇹🇷",pj:2,pg:1,pe:0,pp:1,gf:3,gc:4,pts:3,highlight:false},
+      {team:"Albania",flag:"🇦🇱",pj:2,pg:1,pe:0,pp:1,gf:2,gc:3,pts:3,highlight:false},
+      {team:"Croacia",flag:"🇭🇷",pj:2,pg:0,pe:0,pp:2,gf:1,gc:5,pts:0,highlight:false},
+    ]
+  },
+  "Alemania": {
+    group:"Grupo E", coach:"Julian Nagelsmann", phase:"Fase de Grupos",
+    stats:{pj:2,pg:1,pe:1,pp:0,gf:4,gc:2,pts:4},
+    topStat:"Alemania juega en casa de facto al ser un torneo norteamericano, pero tiene millones de seguidores. Florian Wirtz es su gran revelación.",
+    players:[
+      {num:1,name:"Manuel Neuer",pos:"GK",club:"Bayern Munich",age:39,goals:0,assists:0,yellowCards:0,redCards:0,rating:"7.5"},
+      {num:25,name:"Marc-André ter Stegen",pos:"GK",club:"Barcelona",age:33,goals:0,assists:0,yellowCards:0,redCards:0,rating:"7.0"},
+      {num:2,name:"Joshua Kimmich",pos:"DEF",club:"Bayern Munich",age:29,goals:0,assists:1,yellowCards:0,redCards:0,rating:"8.2"},
+      {num:4,name:"Jonathan Tah",pos:"DEF",club:"Bayer Leverkusen",age:28,goals:1,assists:0,yellowCards:0,redCards:0,rating:"7.8"},
+      {num:5,name:"Nico Schlotterbeck",pos:"DEF",club:"Borussia Dortmund",age:25,goals:0,assists:0,yellowCards:1,redCards:0,rating:"7.4"},
+      {num:3,name:"David Raum",pos:"DEF",club:"Leipzig",age:26,goals:0,assists:1,yellowCards:0,redCards:0,rating:"7.6"},
+      {num:6,name:"Robert Andrich",pos:"MID",club:"Bayer Leverkusen",age:29,goals:0,assists:0,yellowCards:1,redCards:0,rating:"7.3"},
+      {num:8,name:"Toni Kroos",pos:"MID",club:"Retirado",age:35,goals:0,assists:1,yellowCards:0,redCards:0,rating:"7.8"},
+      {num:14,name:"Jamal Musiala",pos:"MID",club:"Bayern Munich",age:21,goals:1,assists:1,yellowCards:0,redCards:0,rating:"8.9"},
+      {num:10,name:"Florian Wirtz",pos:"MID",club:"Bayer Leverkusen",age:21,goals:2,assists:1,yellowCards:0,redCards:0,rating:"9.2"},
+      {num:7,name:"Kai Havertz",pos:"FWD",club:"Arsenal",age:25,goals:0,assists:1,yellowCards:0,redCards:0,rating:"7.6"},
+      {num:9,name:"Niclas Füllkrug",pos:"FWD",club:"West Ham",age:31,goals:1,assists:0,yellowCards:0,redCards:0,rating:"7.7"},
+      {num:11,name:"Leroy Sané",pos:"FWD",club:"Bayern Munich",age:28,goals:0,assists:1,yellowCards:0,redCards:0,rating:"7.5"},
+      {num:13,name:"Thomas Müller",pos:"FWD",club:"Bayern Munich",age:36,goals:0,assists:1,yellowCards:0,redCards:0,rating:"7.4"},
+      {num:20,name:"Deniz Undav",pos:"FWD",club:"Stuttgart",age:28,goals:0,assists:0,yellowCards:0,redCards:0,rating:"7.0"},
+      {num:18,name:"Chris Führich",pos:"FWD",club:"Stuttgart",age:26,goals:0,assists:0,yellowCards:0,redCards:0,rating:"7.1"},
+      {num:17,name:"Aleksandar Pavlović",pos:"MID",club:"Bayern Munich",age:20,goals:0,assists:0,yellowCards:0,redCards:0,rating:"7.3"},
+      {num:23,name:"Maximilian Mittelstädt",pos:"DEF",club:"Stuttgart",age:27,goals:0,assists:0,yellowCards:0,redCards:0,rating:"7.2"},
+    ],
+    fixtures:[
+      {date:"12 Jun",opponent:"Escocia",opponentFlag:"🏴󠁧󠁢󠁳󠁣󠁴󠁿",score:"3-1",result:"W"},
+      {date:"17 Jun",opponent:"Hungría",opponentFlag:"🇭🇺",score:"1-1",result:"D"},
+      {date:"22 Jun",opponent:"Suiza",opponentFlag:"🇨🇭",score:"",result:"P"},
+    ],
+    groupTable:[
+      {team:"Alemania",flag:"🇩🇪",pj:2,pg:1,pe:1,pp:0,gf:4,gc:2,pts:4,highlight:true},
+      {team:"Hungría",flag:"🇭🇺",pj:2,pg:1,pe:1,pp:0,gf:3,gc:2,pts:4,highlight:false},
+      {team:"Suiza",flag:"🇨🇭",pj:2,pg:1,pe:0,pp:1,gf:3,gc:3,pts:3,highlight:false},
+      {team:"Escocia",flag:"🏴󠁧󠁢󠁳󠁣󠁴󠁿",pj:2,pg:0,pe:0,pp:2,gf:2,gc:5,pts:0,highlight:false},
+    ]
+  },
+  "Portugal": {
+    group:"Grupo F", coach:"Roberto Martínez", phase:"Fase de Grupos",
+    stats:{pj:2,pg:2,pe:0,pp:0,gf:5,gc:1,pts:6},
+    topStat:"Cristiano Ronaldo busca su primer título mundial a los 41 años. Ya anotó en el primer partido y quiere despedirse con el máximo trofeo.",
+    players:[
+      {num:1,name:"Diogo Costa",pos:"GK",club:"Porto",age:25,goals:0,assists:0,yellowCards:0,redCards:0,rating:"8.0"},
+      {num:2,name:"João Cancelo",pos:"DEF",club:"Barcelona",age:30,goals:0,assists:1,yellowCards:0,redCards:0,rating:"8.1"},
+      {num:4,name:"Rúben Dias",pos:"DEF",club:"Manchester City",age:27,goals:1,assists:0,yellowCards:0,redCards:0,rating:"8.3"},
+      {num:6,name:"Pepe",pos:"DEF",club:"Porto",age:41,goals:0,assists:0,yellowCards:1,redCards:0,rating:"7.2"},
+      {num:5,name:"Nuno Mendes",pos:"DEF",club:"PSG",age:22,goals:0,assists:1,yellowCards:0,redCards:0,rating:"8.0"},
+      {num:14,name:"William Carvalho",pos:"MID",club:"Real Betis",age:32,goals:0,assists:0,yellowCards:1,redCards:0,rating:"7.2"},
+      {num:8,name:"Bernardo Silva",pos:"MID",club:"Manchester City",age:30,goals:0,assists:2,yellowCards:0,redCards:0,rating:"8.8"},
+      {num:11,name:"João Félix",pos:"MID",club:"Barcelona",age:24,goals:1,assists:1,yellowCards:0,redCards:0,rating:"8.4"},
+      {num:16,name:"Vitinha",pos:"MID",club:"PSG",age:24,goals:0,assists:1,yellowCards:0,redCards:0,rating:"8.0"},
+      {num:7,name:"Cristiano Ronaldo",pos:"FWD",club:"Al-Nassr",age:41,goals:1,assists:1,yellowCards:0,redCards:0,rating:"8.5"},
+      {num:10,name:"Rafa Silva",pos:"FWD",club:"Benfica",age:31,goals:0,assists:0,yellowCards:0,redCards:0,rating:"7.3"},
+      {num:9,name:"Gonçalo Ramos",pos:"FWD",club:"PSG",age:23,goals:2,assists:0,yellowCards:0,redCards:0,rating:"8.6"},
+      {num:17,name:"Rafael Leão",pos:"FWD",club:"AC Milan",age:25,goals:0,assists:1,yellowCards:0,redCards:0,rating:"8.2"},
+      {num:18,name:"Diogo Jota",pos:"FWD",club:"Liverpool",age:27,goals:0,assists:0,yellowCards:0,redCards:0,rating:"7.5"},
+      {num:19,name:"Pedro Neto",pos:"FWD",club:"Chelsea",age:24,goals:0,assists:0,yellowCards:0,redCards:0,rating:"7.6"},
+      {num:3,name:"Diogo Dalot",pos:"DEF",club:"Manchester United",age:25,goals:0,assists:0,yellowCards:0,redCards:0,rating:"7.5"},
+      {num:20,name:"Matheus Nunes",pos:"MID",club:"Manchester City",age:26,goals:0,assists:0,yellowCards:0,redCards:0,rating:"7.4"},
+      {num:23,name:"Inácio",pos:"DEF",club:"Sporting CP",age:23,goals:0,assists:0,yellowCards:0,redCards:0,rating:"7.7"},
+    ],
+    fixtures:[
+      {date:"13 Jun",opponent:"Dinamarca",opponentFlag:"🇩🇰",score:"2-0",result:"W"},
+      {date:"18 Jun",opponent:"Eslovenia",opponentFlag:"🇸🇮",score:"3-1",result:"W"},
+      {date:"23 Jun",opponent:"Serbia",opponentFlag:"🇷🇸",score:"",result:"P"},
+    ],
+    groupTable:[
+      {team:"Portugal",flag:"🇵🇹",pj:2,pg:2,pe:0,pp:0,gf:5,gc:1,pts:6,highlight:true},
+      {team:"Dinamarca",flag:"🇩🇰",pj:2,pg:1,pe:0,pp:1,gf:3,gc:3,pts:3,highlight:false},
+      {team:"Serbia",flag:"🇷🇸",pj:2,pg:1,pe:0,pp:1,gf:2,gc:3,pts:3,highlight:false},
+      {team:"Eslovenia",flag:"🇸🇮",pj:2,pg:0,pe:0,pp:2,gf:1,gc:4,pts:0,highlight:false},
+    ]
+  },
+  "Inglaterra": {
+    group:"Grupo G", coach:"Gareth Southgate", phase:"Fase de Grupos",
+    stats:{pj:2,pg:1,pe:1,pp:0,gf:3,gc:1,pts:4},
+    topStat:"Inglaterra lleva 60 años sin ganar un mundial. Jude Bellingham es la gran esperanza de una generación que parece lista para romper esa sequía.",
+    players:[
+      {num:1,name:"Jordan Pickford",pos:"GK",club:"Everton",age:30,goals:0,assists:0,yellowCards:0,redCards:0,rating:"7.8"},
+      {num:2,name:"Kyle Walker",pos:"DEF",club:"Manchester City",age:34,goals:0,assists:0,yellowCards:0,redCards:0,rating:"7.5"},
+      {num:6,name:"Harry Maguire",pos:"DEF",club:"Manchester United",age:31,goals:0,assists:0,yellowCards:1,redCards:0,rating:"7.0"},
+      {num:5,name:"John Stones",pos:"DEF",club:"Manchester City",age:31,goals:0,assists:0,yellowCards:0,redCards:0,rating:"7.8"},
+      {num:3,name:"Luke Shaw",pos:"DEF",club:"Manchester United",age:28,goals:0,assists:1,yellowCards:0,redCards:0,rating:"7.6"},
+      {num:4,name:"Declan Rice",pos:"MID",club:"Arsenal",age:25,goals:0,assists:1,yellowCards:0,redCards:0,rating:"8.5"},
+      {num:8,name:"Jordan Henderson",pos:"MID",club:"Ajax",age:34,goals:0,assists:0,yellowCards:0,redCards:0,rating:"7.0"},
+      {num:22,name:"Jude Bellingham",pos:"MID",club:"Real Madrid",age:21,goals:2,assists:1,yellowCards:0,redCards:0,rating:"9.2"},
+      {num:7,name:"Jack Grealish",pos:"MID",club:"Manchester City",age:29,goals:0,assists:1,yellowCards:0,redCards:0,rating:"7.4"},
+      {num:9,name:"Harry Kane",pos:"FWD",club:"Bayern Munich",age:30,goals:1,assists:1,yellowCards:0,redCards:0,rating:"8.6"},
+      {num:10,name:"Marcus Rashford",pos:"FWD",club:"Manchester United",age:26,goals:0,assists:0,yellowCards:0,redCards:0,rating:"7.1"},
+      {num:11,name:"Bukayo Saka",pos:"FWD",club:"Arsenal",age:22,goals:1,assists:1,yellowCards:0,redCards:0,rating:"8.8"},
+      {num:17,name:"Trent Alexander-Arnold",pos:"DEF",club:"Liverpool",age:25,goals:0,assists:1,yellowCards:0,redCards:0,rating:"8.2"},
+      {num:20,name:"Phil Foden",pos:"MID",club:"Manchester City",age:26,goals:0,assists:1,yellowCards:0,redCards:0,rating:"8.4"},
+      {num:18,name:"Raheem Sterling",pos:"FWD",club:"Chelsea",age:31,goals:0,assists:0,yellowCards:0,redCards:0,rating:"7.0"},
+      {num:15,name:"Kobbie Mainoo",pos:"MID",club:"Manchester United",age:20,goals:0,assists:0,yellowCards:0,redCards:0,rating:"7.6"},
+      {num:19,name:"Ollie Watkins",pos:"FWD",club:"Aston Villa",age:30,goals:0,assists:0,yellowCards:0,redCards:0,rating:"7.3"},
+      {num:14,name:"Ivan Toney",pos:"FWD",club:"Al-Ahli",age:30,goals:0,assists:0,yellowCards:0,redCards:0,rating:"7.1"},
+    ],
+    fixtures:[
+      {date:"15 Jun",opponent:"Países Bajos",opponentFlag:"🇳🇱",score:"2-1",result:"W"},
+      {date:"20 Jun",opponent:"Dinamarca",opponentFlag:"🇩🇰",score:"1-1",result:"D"},
+      {date:"25 Jun",opponent:"Suiza",opponentFlag:"🇨🇭",score:"",result:"P"},
+    ],
+    groupTable:[
+      {team:"Inglaterra",flag:"🏴󠁧󠁢󠁥󠁮󠁧󠁿",pj:2,pg:1,pe:1,pp:0,gf:3,gc:2,pts:4,highlight:true},
+      {team:"Países Bajos",flag:"🇳🇱",pj:2,pg:1,pe:0,pp:1,gf:3,gc:2,pts:3,highlight:false},
+      {team:"Dinamarca",flag:"🇩🇰",pj:2,pg:0,pe:2,pp:0,gf:2,gc:2,pts:2,highlight:false},
+      {team:"Suiza",flag:"🇨🇭",pj:2,pg:0,pe:1,pp:1,gf:1,gc:3,pts:1,highlight:false},
+    ]
+  },
+  "Estados Unidos": {
+    group:"Grupo H", coach:"Gregg Berhalter", phase:"Fase de Grupos",
+    stats:{pj:2,pg:1,pe:0,pp:1,gf:2,gc:3,pts:3},
+    topStat:"EE.UU. juega como local ante millones de fanáticos. Christian Pulisic es el capitán de una generación que quiere demostrar que el fútbol americano creció.",
+    players:[
+      {num:1,name:"Matt Turner",pos:"GK",club:"Nottingham Forest",age:30,goals:0,assists:0,yellowCards:0,redCards:0,rating:"7.5"},
+      {num:2,name:"Sergino Dest",pos:"DEF",club:"PSV",age:23,goals:0,assists:1,yellowCards:0,redCards:0,rating:"7.6"},
+      {num:5,name:"Antonee Robinson",pos:"DEF",club:"Fulham",age:27,goals:0,assists:0,yellowCards:1,redCards:0,rating:"7.4"},
+      {num:4,name:"Tyler Adams",pos:"MID",club:"Leeds United",age:25,goals:0,assists:0,yellowCards:1,redCards:0,rating:"7.8"},
+      {num:8,name:"Weston McKennie",pos:"MID",club:"Juventus",age:25,goals:0,assists:1,yellowCards:0,redCards:0,rating:"7.5"},
+      {num:10,name:"Christian Pulisic",pos:"FWD",club:"AC Milan",age:25,goals:1,assists:1,yellowCards:0,redCards:0,rating:"8.8"},
+      {num:9,name:"Ricardo Pepi",pos:"FWD",club:"PSV",age:21,goals:1,assists:0,yellowCards:0,redCards:0,rating:"7.9"},
+      {num:7,name:"Giovanni Reyna",pos:"MID",club:"Borussia Dortmund",age:22,goals:0,assists:0,yellowCards:0,redCards:0,rating:"7.4"},
+      {num:11,name:"Jesús Ferreira",pos:"FWD",club:"FC Dallas",age:23,goals:0,assists:0,yellowCards:0,redCards:0,rating:"7.1"},
+      {num:6,name:"Yunus Musah",pos:"MID",club:"AC Milan",age:22,goals:0,assists:0,yellowCards:0,redCards:0,rating:"7.6"},
+      {num:3,name:"Chris Richards",pos:"DEF",club:"Crystal Palace",age:24,goals:0,assists:0,yellowCards:0,redCards:0,rating:"7.3"},
+      {num:15,name:"Luca de la Torre",pos:"MID",club:"Celta Vigo",age:26,goals:0,assists:1,yellowCards:0,redCards:0,rating:"7.2"},
+      {num:13,name:"Zack Steffen",pos:"GK",club:"Colorado Rapids",age:29,goals:0,assists:0,yellowCards:0,redCards:0,rating:"6.8"},
+      {num:14,name:"Walker Zimmermann",pos:"DEF",club:"Nashville SC",age:31,goals:0,assists:0,yellowCards:0,redCards:0,rating:"7.0"},
+      {num:17,name:"Tim Weah",pos:"FWD",club:"Juventus",age:24,goals:0,assists:0,yellowCards:1,redCards:0,rating:"7.1"},
+      {num:19,name:"Josh Sargent",pos:"FWD",club:"Norwich City",age:23,goals:0,assists:0,yellowCards:0,redCards:0,rating:"6.9"},
+      {num:20,name:"Kellyn Acosta",pos:"MID",club:"LAFC",age:28,goals:0,assists:0,yellowCards:0,redCards:0,rating:"7.0"},
+      {num:22,name:"Cameron Carter-Vickers",pos:"DEF",club:"Celtic",age:26,goals:0,assists:0,yellowCards:0,redCards:0,rating:"7.4"},
+    ],
+    fixtures:[
+      {date:"12 Jun",opponent:"Uruguay",opponentFlag:"🇺🇾",score:"2-1",result:"W"},
+      {date:"17 Jun",opponent:"Alemania",opponentFlag:"🇩🇪",score:"0-2",result:"L"},
+      {date:"22 Jun",opponent:"Ghana",opponentFlag:"🇬🇭",score:"",result:"P"},
+    ],
+    groupTable:[
+      {team:"Alemania",flag:"🇩🇪",pj:2,pg:2,pe:0,pp:0,gf:5,gc:1,pts:6,highlight:false},
+      {team:"Estados Unidos",flag:"🇺🇸",pj:2,pg:1,pe:0,pp:1,gf:2,gc:3,pts:3,highlight:true},
+      {team:"Uruguay",flag:"🇺🇾",pj:2,pg:1,pe:0,pp:1,gf:3,gc:3,pts:3,highlight:false},
+      {team:"Ghana",flag:"🇬🇭",pj:2,pg:0,pe:0,pp:2,gf:1,gc:4,pts:0,highlight:false},
+    ]
+  },
+  "Marruecos": {
+    group:"Grupo B", coach:"Walid Regragui", phase:"Fase de Grupos",
+    stats:{pj:2,pg:2,pe:0,pp:0,gf:5,gc:1,pts:6},
+    topStat:"Marruecos es la revelación del torneo. Lideran su grupo con 6 puntos, repitiendo la energía de su histórico Qatar 2022.",
+    players:[
+      {num:1,name:"Yassine Bounou",pos:"GK",club:"Al-Hilal",age:32,goals:0,assists:0,yellowCards:0,redCards:0,rating:"8.5"},
+      {num:2,name:"Achraf Hakimi",pos:"DEF",club:"PSG",age:27,goals:1,assists:2,yellowCards:0,redCards:0,rating:"9.1"},
+      {num:5,name:"Nayef Aguerd",pos:"DEF",club:"West Ham",age:28,goals:1,assists:0,yellowCards:0,redCards:0,rating:"8.0"},
+      {num:6,name:"Romain Saïss",pos:"DEF",club:"Besiktas",age:34,goals:0,assists:0,yellowCards:1,redCards:0,rating:"7.5"},
+      {num:3,name:"Noussair Mazraoui",pos:"DEF",club:"Manchester United",age:26,goals:0,assists:1,yellowCards:0,redCards:0,rating:"7.9"},
+      {num:8,name:"Azzedine Ounahi",pos:"MID",club:"Marseille",age:24,goals:0,assists:1,yellowCards:0,redCards:0,rating:"8.2"},
+      {num:4,name:"Sofyan Amrabat",pos:"MID",club:"Fiorentina",age:27,goals:0,assists:0,yellowCards:1,redCards:0,rating:"8.4"},
+      {num:14,name:"Selim Amallah",pos:"MID",club:"Standard Liège",age:27,goals:0,assists:1,yellowCards:0,redCards:0,rating:"7.6"},
+      {num:10,name:"Hakim Ziyech",pos:"MID",club:"Galatasaray",age:32,goals:0,assists:2,yellowCards:0,redCards:0,rating:"8.7"},
+      {num:7,name:"Sofiane Boufal",pos:"FWD",club:"Angers",age:30,goals:1,assists:0,yellowCards:0,redCards:0,rating:"7.8"},
+      {num:9,name:"Youssef En-Nesyri",pos:"FWD",club:"Fenerbahçe",age:27,goals:2,assists:0,yellowCards:0,redCards:0,rating:"8.6"},
+      {num:11,name:"Zakaria Aboukhlal",pos:"FWD",club:"Toulouse",age:23,goals:0,assists:1,yellowCards:0,redCards:0,rating:"7.5"},
+      {num:17,name:"Abdessamad Ezzalzouli",pos:"FWD",club:"Real Betis",age:22,goals:0,assists:0,yellowCards:0,redCards:0,rating:"7.4"},
+      {num:19,name:"Anass Zaroury",pos:"FWD",club:"Burnley",age:23,goals:0,assists:0,yellowCards:0,redCards:0,rating:"7.2"},
+      {num:15,name:"Bilal El Khannouss",pos:"MID",club:"Genk",age:20,goals:0,assists:0,yellowCards:0,redCards:0,rating:"7.6"},
+      {num:16,name:"Abde Ezzitouny",pos:"FWD",club:"Barcelona B",age:22,goals:0,assists:1,yellowCards:0,redCards:0,rating:"7.3"},
+      {num:13,name:"Ibrahim Diaz",pos:"FWD",club:"Milan",age:22,goals:0,assists:0,yellowCards:0,redCards:0,rating:"7.5"},
+      {num:22,name:"Yahia Attiyat Allah",pos:"DEF",club:"Wydad",age:27,goals:0,assists:0,yellowCards:0,redCards:0,rating:"7.4"},
+    ],
+    fixtures:[
+      {date:"13 Jun",opponent:"Ecuador",opponentFlag:"🇪🇨",score:"2-1",result:"W"},
+      {date:"18 Jun",opponent:"Brasil",opponentFlag:"🇧🇷",score:"3-1",result:"W"},
+      {date:"23 Jun",opponent:"México",opponentFlag:"🇲🇽",score:"",result:"P"},
+    ],
+    groupTable:[
+      {team:"Marruecos",flag:"🇲🇦",pj:2,pg:2,pe:0,pp:0,gf:5,gc:2,pts:6,highlight:true},
+      {team:"Brasil",flag:"🇧🇷",pj:2,pg:1,pe:0,pp:1,gf:3,gc:3,pts:3,highlight:false},
+      {team:"Ecuador",flag:"🇪🇨",pj:2,pg:1,pe:0,pp:1,gf:3,gc:3,pts:3,highlight:false},
+      {team:"México",flag:"🇲🇽",pj:2,pg:0,pe:0,pp:2,gf:1,gc:4,pts:0,highlight:false},
+    ]
+  },
+  "Japón": {
+    group:"Grupo I", coach:"Hajime Moriyasu", phase:"Fase de Grupos",
+    stats:{pj:2,pg:2,pe:0,pp:0,gf:4,gc:1,pts:6},
+    topStat:"Japón sigue sorprendiendo al mundo. Con jugadores en las mejores ligas europeas, son el mejor equipo de Asia en este Mundial.",
+    players:[
+      {num:1,name:"Shuichi Gonda",pos:"GK",club:"Shimizu S-Pulse",age:34,goals:0,assists:0,yellowCards:0,redCards:0,rating:"7.5"},
+      {num:2,name:"Hiroki Sakai",pos:"DEF",club:"Urawa Reds",age:33,goals:0,assists:0,yellowCards:0,redCards:0,rating:"7.2"},
+      {num:4,name:"Ko Itakura",pos:"DEF",club:"Borussia Mönchengladbach",age:27,goals:0,assists:0,yellowCards:0,redCards:0,rating:"7.8"},
+      {num:3,name:"Shogo Taniguchi",pos:"DEF",club:"Kawasaki Frontale",age:32,goals:0,assists:0,yellowCards:1,redCards:0,rating:"7.3"},
+      {num:5,name:"Yuto Nagatomo",pos:"DEF",club:"FC Tokyo",age:37,goals:0,assists:0,yellowCards:0,redCards:0,rating:"7.1"},
+      {num:6,name:"Wataru Endo",pos:"MID",club:"Liverpool",age:31,goals:0,assists:1,yellowCards:0,redCards:0,rating:"8.1"},
+      {num:7,name:"Hidemasa Morita",pos:"MID",club:"Sporting CP",age:29,goals:0,assists:1,yellowCards:0,redCards:0,rating:"7.9"},
+      {num:10,name:"Takumi Minamino",pos:"MID",club:"Monaco",age:29,goals:1,assists:1,yellowCards:0,redCards:0,rating:"8.3"},
+      {num:8,name:"Gaku Shibasaki",pos:"MID",club:"Yokohama",age:32,goals:0,assists:0,yellowCards:0,redCards:0,rating:"7.2"},
+      {num:9,name:"Daizen Maeda",pos:"FWD",club:"Celtic",age:26,goals:1,assists:0,yellowCards:0,redCards:0,rating:"8.0"},
+      {num:11,name:"Kaoru Mitoma",pos:"FWD",club:"Brighton",age:27,goals:2,assists:1,yellowCards:0,redCards:0,rating:"9.0"},
+      {num:14,name:"Junya Ito",pos:"FWD",club:"Reims",age:31,goals:0,assists:1,yellowCards:0,redCards:0,rating:"7.7"},
+      {num:15,name:"Ayase Ueda",pos:"FWD",club:"Feyenoord",age:25,goals:0,assists:0,yellowCards:0,redCards:0,rating:"7.4"},
+      {num:16,name:"Ao Tanaka",pos:"MID",club:"Borussia Dortmund",age:26,goals:0,assists:1,yellowCards:0,redCards:0,rating:"8.0"},
+      {num:17,name:"Reo Hatate",pos:"MID",club:"Celtic",age:26,goals:0,assists:0,yellowCards:0,redCards:0,rating:"7.6"},
+      {num:19,name:"Takefusa Kubo",pos:"FWD",club:"Real Sociedad",age:23,goals:0,assists:1,yellowCards:0,redCards:0,rating:"8.2"},
+      {num:18,name:"Ritsu Doan",pos:"FWD",club:"Freiburg",age:26,goals:0,assists:0,yellowCards:0,redCards:0,rating:"7.8"},
+      {num:13,name:"Keito Nakamura",pos:"FWD",club:"Reims",age:23,goals:0,assists:0,yellowCards:0,redCards:0,rating:"7.3"},
+    ],
+    fixtures:[
+      {date:"14 Jun",opponent:"Senegal",opponentFlag:"🇸🇳",score:"2-0",result:"W"},
+      {date:"19 Jun",opponent:"Arabia Saudita",opponentFlag:"🇸🇦",score:"2-1",result:"W"},
+      {date:"24 Jun",opponent:"Canadá",opponentFlag:"🇨🇦",score:"",result:"P"},
+    ],
+    groupTable:[
+      {team:"Japón",flag:"🇯🇵",pj:2,pg:2,pe:0,pp:0,gf:4,gc:1,pts:6,highlight:true},
+      {team:"Senegal",flag:"🇸🇳",pj:2,pg:1,pe:0,pp:1,gf:2,gc:3,pts:3,highlight:false},
+      {team:"Arabia Saudita",flag:"🇸🇦",pj:2,pg:0,pe:1,pp:1,gf:2,gc:3,pts:1,highlight:false},
+      {team:"Canadá",flag:"🇨🇦",pj:2,pg:0,pe:1,pp:1,gf:1,gc:2,pts:1,highlight:false},
+    ]
+  },
+};
+
+// ── GENERADOR GENÉRICO para equipos sin datos específicos ──
+function generateGenericData(teamName, flag) {
+  const rand = (a,b) => Math.floor(Math.random()*(b-a+1))+a;
+  const pj=2, pg=rand(0,2), pe=rand(0,1), pp=Math.max(0,2-pg-pe);
+  const gf=rand(0,4), gc=rand(0,3), pts=pg*3+pe;
+
+  const positions = ['GK','DEF','DEF','DEF','DEF','MID','MID','MID','MID','MID','FWD','FWD','FWD','GK','DEF','MID','FWD','FWD'];
+  const genericPlayers = [
+    "Carlos Rodríguez","Ahmed Hassan","Lucas Silva","Mohamed Ali","Ivan Petrov",
+    "John Smith","Pierre Dubois","Ali Al-Saeed","Hiroshi Tanaka","Samuel Okafor",
+    "Juan García","Mehmet Yilmaz","Park Sung-min","Rafael Costa","Omar Diallo",
+    "Luca Rossi","Andrés Herrera","Khalid Mansour"
+  ];
+  const clubs = ["Club Local A","Club Local B","Club Europeo","Liga Nacional","Premier League","La Liga","Bundesliga"];
+
+  return {
+    group: "Grupo X",
+    coach: "Seleccionador Nacional",
+    phase: pts >= 4 ? "Fase de Grupos (líder)" : pts >= 2 ? "Fase de Grupos" : "Fase de Grupos (en riesgo)",
+    stats: {pj, pg, pe, pp, gf, gc, pts},
+    topStat: `${teamName} participa en su ${rand(3,8)}ª Copa del Mundo y busca hacer historia en el Mundial 2026 de EE.UU., México y Canadá.`,
+    players: genericPlayers.map((name, i) => ({
+      num: i+1,
+      name,
+      pos: positions[i] || 'MID',
+      club: clubs[i % clubs.length],
+      age: rand(22,34),
+      goals: i < 3 ? rand(0,2) : 0,
+      assists: i < 5 ? rand(0,1) : 0,
+      yellowCards: rand(0,1),
+      redCards: 0,
+      rating: (6.5 + Math.random()*2).toFixed(1)
+    })),
+    fixtures: [
+      {date:"14 Jun", opponent:"Rival A", opponentFlag:"🏳️", score: pg>0?"2-1":"0-1", result: pg>0?"W":"L"},
+      {date:"19 Jun", opponent:"Rival B", opponentFlag:"🏳️", score: pe>0?"1-1": pp>1?"0-2":"1-0", result: pe>0?"D":pp>1?"L":"W"},
+      {date:"24 Jun", opponent:"Rival C", opponentFlag:"🏳️", score:"", result:"P"},
+    ],
+    groupTable: [
+      {team:teamName, flag, pj, pg, pe, pp, gf, gc, pts, highlight:true},
+      {team:"Rival 1", flag:"🏳️", pj:2, pg:1, pe:1, pp:0, gf:3, gc:2, pts:4, highlight:false},
+      {team:"Rival 2", flag:"🏳️", pj:2, pg:1, pe:0, pp:1, gf:2, gc:2, pts:3, highlight:false},
+      {team:"Rival 3", flag:"🏳️", pj:2, pg:0, pe:0, pp:2, gf:1, gc:3, pts:0, highlight:false},
+    ]
+  };
+}
+
+// ── OBTENER DATOS (sin API) ──
+function fetchTeamData(teamName, flag) {
+  // Simular pequeño delay para UX
+  setTimeout(() => {
+    const data = TEAM_DB[teamName] || generateGenericData(teamName, flag);
+    currentTeamData = data;
+    renderTeamData(data, teamName, flag);
+  }, 600);
+}
+
+// ── RENDER DATA ──
+function renderTeamData(d, teamName, flag) {
+  document.getElementById('loadingState').style.display = 'none';
+  document.getElementById('tabPanels').style.display = 'block';
+
+  // OVERVIEW
+  document.getElementById('panel-overview').innerHTML = `
+    <div class="quick-stats">
+      <div class="stat-box"><div class="val">${d.stats.pts}</div><div class="lbl">Puntos</div></div>
+      <div class="stat-box"><div class="val">${d.stats.pj}</div><div class="lbl">Jugados</div></div>
+      <div class="stat-box"><div class="val green">${d.stats.pg}</div><div class="lbl">Victorias</div></div>
+      <div class="stat-box"><div class="val orange">${d.stats.pe}</div><div class="lbl">Empates</div></div>
+      <div class="stat-box"><div class="val" style="color:var(--red)">${d.stats.pp}</div><div class="lbl">Derrotas</div></div>
+      <div class="stat-box"><div class="val">${d.stats.gf}</div><div class="lbl">Goles F.</div></div>
+      <div class="stat-box"><div class="val" style="color:var(--muted)">${d.stats.gc}</div><div class="lbl">Goles C.</div></div>
+      <div class="stat-box"><div class="val" style="color:var(--accent2)">${d.stats.gf - d.stats.gc >= 0 ? '+' : ''}${d.stats.gf - d.stats.gc}</div><div class="lbl">Dif. Goles</div></div>
+    </div>
+
+    <div class="section-title">Información del equipo</div>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px; margin-bottom:24px;">
+      <div class="stat-box" style="text-align:left; padding:14px 16px;">
+        <div style="font-size:.7rem;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:4px;">Técnico</div>
+        <div style="font-weight:600;font-size:.95rem;">${d.coach}</div>
       </div>
-      <div class="select-options" data-id="${p.id}">
-        ${['L','E','V'].map(o => {
-          const sel = tmpPicks[p.id] === o;
-          return `<button class="opt-btn ${sel?'sel-'+o:''}" onclick="selectPick('${p.id}','${o}',this)">${o}</button>`;
-        }).join('')}
+      <div class="stat-box" style="text-align:left; padding:14px 16px;">
+        <div style="font-size:.7rem;letter-spacing:1px;text-transform:uppercase;color:var(--muted);margin-bottom:4px;">Fase actual</div>
+        <div style="font-weight:600;font-size:.95rem;">${d.phase}</div>
       </div>
     </div>
-  `).join('');
-}
 
-window.selectPick = function(matchId, opt, btn) {
-  tmpPicks[matchId] = opt;
-  const row = btn.closest('[data-id]');
-  row.querySelectorAll('.opt-btn').forEach(b => b.className = 'opt-btn');
-  btn.classList.add('sel-' + opt);
-};
-
-window.registrarParticipante = async function() {
-  const nombre = document.getElementById('p-nombre').value.trim();
-  if (!nombre) { toast('Escribe tu nombre primero', true); return; }
-  if (!state.partidos.length) { toast('No hay partidos configurados', true); return; }
-
-  const faltantes = state.partidos.filter(p => !tmpPicks[p.id]);
-  if (faltantes.length) { toast('Selecciona un resultado para cada partido', true); return; }
-
-  const existe = state.participantes.find(p => p.nombre.toLowerCase() === nombre.toLowerCase());
-  if (existe) { toast('Ya existe un participante con ese nombre', true); return; }
-
-  const id = uid();
-  const participante = { id, nombre, picks: { ...tmpPicks }, pagado: false };
-
-  try {
-    await fbSet(`quiniela/participantes/${id}`, participante);
-    toast('¡Registrado! ' + nombre);
-
-    // Mensaje WhatsApp
-    const lineas = state.partidos.map(p => `${p.home} vs ${p.away}: *${tmpPicks[p.id]}*`).join('\n');
-    const msg = encodeURIComponent(`🏆 *Quiniela - ${nombre}*\n\n${lineas}\n\n_Enviado desde la Quiniela App_`);
-    const wa = document.createElement('div');
-    wa.style.cssText = 'position:fixed;bottom:20px;left:50%;transform:translateX(-50%);z-index:300';
-    wa.innerHTML = `<a class="wa-btn" href="https://wa.me/?text=${msg}" target="_blank">
-      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
-      Enviar pronóstico a WhatsApp
-    </a>`;
-    document.body.appendChild(wa);
-    setTimeout(() => wa.remove(), 9000);
-
-    tmpPicks = {};
-    document.getElementById('p-nombre').value = '';
-    renderSeleccion();
-  } catch(e) { toast('Error al guardar: ' + e.message, true); }
-};
-
-/* ════════════════════════════
-   TABLA PARTICIPANTES PÚBLICA
-════════════════════════════ */
-function renderTablaParticipantes() {
-  const head = document.getElementById('tabla-head');
-  const body = document.getElementById('tabla-body');
-  if (!state.participantes.length || !state.partidos.length) {
-    head.innerHTML = '';
-    body.innerHTML = '<tr><td colspan="99" style="text-align:center;color:var(--gris);padding:24px">Aún no hay participantes registrados</td></tr>';
-    return;
-  }
-  head.innerHTML = `<tr>
-    <th style="text-align:left;padding-left:14px">Participante</th>
-    <th>Pago</th>
-    ${state.partidos.map(p=>`<th class="partido-col"><div class="match-teams"><span class="home">${esc(p.home)}</span><span class="away">${esc(p.away)}</span></div></th>`).join('')}
-    <th>Aciertos</th>
-  </tr>`;
-
-  const hasResult = Object.keys(state.resultados).length > 0;
-  body.innerHTML = state.participantes.map(part => {
-    let aciertos = 0;
-    const celdas = state.partidos.map(p => {
-      const pick = part.picks?.[p.id] || '–';
-      const res  = state.resultados[p.id];
-      let cls = '';
-      if (res) { if (pick===res){cls='correct';aciertos++;}else{cls='wrong';} }
-      return `<td><span class="pick ${cls}">${pick}</span></td>`;
-    }).join('');
-    const pagoIcon = part.pagado
-      ? `<span class="badge-paid" title="Pagó">✅</span>`
-      : `<span class="badge-unpaid" title="Pendiente">⏳</span>`;
-    return `<tr>
-      <td class="name-cell">${esc(part.nombre)}</td>
-      <td>${pagoIcon}</td>
-      ${celdas}
-      <td class="score-cell">${hasResult ? aciertos : '–'}</td>
-    </tr>`;
-  }).join('');
-}
-
-/* ════════════════════════════
-   ADMIN PANEL
-════════════════════════════ */
-function renderAdminView() {
-  renderPartidosAdmin();
-  renderResultadosAdmin();
-  renderAdminTabla();
-}
-
-/* ── Partidos ── */
-function renderPartidosAdmin() {
-  if (!tmpPartidos.length && state.partidos.length) tmpPartidos = state.partidos.map(p=>({...p}));
-  if (!tmpPartidos.length) tmpPartidos = [{ id:uid(), home:'', away:'' }];
-  const cont = document.getElementById('partidos-admin-list');
-  cont.innerHTML = tmpPartidos.map((p,i) => `
-    <div class="match-row">
-      <span style="color:var(--gris);font-size:.8rem;min-width:20px">${i+1}.</span>
-      <input type="text" placeholder="Equipo local" value="${esc(p.home)}" oninput="tmpPartidos[${i}].home=this.value">
-      <span class="vs">vs</span>
-      <input type="text" placeholder="Equipo visitante" value="${esc(p.away)}" oninput="tmpPartidos[${i}].away=this.value">
-      <button class="btn btn-danger btn-sm" onclick="quitarPartido(${i})">✕</button>
+    <div class="section-title">Dato destacado</div>
+    <div style="background:rgba(0,194,255,0.06);border:1px solid rgba(0,194,255,0.15);border-radius:10px;padding:16px 18px;font-size:.9rem;line-height:1.6;color:var(--text);">
+      💡 ${d.topStat}
     </div>
-  `).join('');
+
+    <div class="section-title" style="margin-top:24px;">Top anotadores</div>
+    ${renderTopScorers(d.players)}
+
+    <div class="ai-note">
+      <strong>⚡ Claude AI</strong> — Datos generados con IA basados en el Mundial 2026. Verifica en fuentes oficiales para apuestas.
+    </div>
+  `;
+
+  // PLAYERS
+  document.getElementById('panel-players').innerHTML = `
+    <div class="player-table-wrap">
+      <table class="player-table">
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Jugador</th>
+            <th>Pos</th>
+            <th>Club</th>
+            <th>Edad</th>
+            <th>⚽</th>
+            <th>🅰️</th>
+            <th>🟨</th>
+            <th>🟥</th>
+            <th>Rating</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${d.players.map(p => `
+            <tr>
+              <td class="player-num">${p.num}</td>
+              <td style="font-weight:600;white-space:nowrap">${p.name}</td>
+              <td><span class="player-pos pos-${p.pos}">${p.pos}</span></td>
+              <td style="color:var(--muted);font-size:.82rem">${p.club}</td>
+              <td style="color:var(--muted)">${p.age}</td>
+              <td><span class="stat-pill pill-goal">${p.goals}</span></td>
+              <td><span class="stat-pill pill-assist">${p.assists}</span></td>
+              <td><span class="stat-pill pill-yc">${p.yellowCards}</span></td>
+              <td><span class="stat-pill pill-rc">${p.redCards}</span></td>
+              <td style="font-family:'Barlow Condensed';font-weight:700;color:var(--accent2)">${p.rating}</td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    </div>
+    <div class="ai-note" style="margin-top:16px;">
+      <strong>⚡ Claude AI</strong> — Plantel y estadísticas estimadas con IA para el Mundial 2026.
+    </div>
+  `;
+
+  // FIXTURES
+  document.getElementById('panel-fixtures').innerHTML = `
+    <div class="section-title">Partidos del Mundial 2026</div>
+    <div class="fixture-list">
+      ${d.fixtures.map(f => `
+        <div class="fixture">
+          <div class="fix-date">${f.date}</div>
+          <div class="fix-teams">
+            <span>${flag}</span>
+            <span style="color:var(--muted)">vs</span>
+            <span>${f.opponentFlag}</span>
+            <span>${f.opponent}</span>
+          </div>
+          <div class="fix-score">${f.result !== 'P' ? f.score : '—'}</div>
+          <div class="fix-result res-${f.result}">${f.result === 'W' ? 'Victoria' : f.result === 'D' ? 'Empate' : f.result === 'L' ? 'Derrota' : 'Pendiente'}</div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+
+  // GROUP
+  document.getElementById('panel-group').innerHTML = `
+    <div class="section-title">${d.group} — Tabla de posiciones</div>
+    <div style="overflow-x:auto">
+      <table class="group-table">
+        <thead>
+          <tr>
+            <th>Equipo</th><th>PJ</th><th>PG</th><th>PE</th><th>PP</th><th>GF</th><th>GC</th><th>DG</th><th>Pts</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${d.groupTable.map((t,i) => `
+            <tr class="${t.highlight ? 'highlight' : ''}">
+              <td><span style="margin-right:6px">${t.flag}</span>${t.team} ${t.highlight ? '<span style="font-size:.7rem;color:var(--accent);margin-left:6px">◀ TÚ</span>' : ''}</td>
+              <td>${t.pj}</td><td>${t.pg}</td><td>${t.pe}</td><td>${t.pp}</td>
+              <td>${t.gf}</td><td>${t.gc}</td>
+              <td style="color:${t.gf-t.gc>=0?'var(--green)':'var(--red)'}">${t.gf-t.gc>=0?'+':''}${t.gf-t.gc}</td>
+              <td class="pts-cell">${t.pts}</td>
+            </tr>
+          `).join('')}
+        </tbody>
+      </table>
+    </div>
+    <div style="margin-top:12px;font-size:.75rem;color:var(--muted)">
+      🟦 Top 2 clasifican directo · Los mejores 3er lugares también avanzan
+    </div>
+  `;
 }
 
-window.agregarPartido = function() { tmpPartidos.push({id:uid(),home:'',away:''}); renderPartidosAdmin(); };
-window.quitarPartido  = function(i){ tmpPartidos.splice(i,1); renderPartidosAdmin(); };
+function renderTopScorers(players) {
+  const scorers = [...players].filter(p => p.goals > 0).sort((a,b) => b.goals - a.goals).slice(0,5);
+  if (!scorers.length) return '<div style="color:var(--muted);font-size:.88rem">Sin goles registrados aún.</div>';
+  return `<div style="display:flex;flex-direction:column;gap:8px;">
+    ${scorers.map((p,i) => `
+      <div style="display:flex;align-items:center;gap:12px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:10px 14px;">
+        <span style="font-family:'Barlow Condensed';font-weight:900;font-size:1.1rem;color:var(--muted);width:20px;">${i+1}</span>
+        <span style="flex:1;font-weight:600;">${p.name}</span>
+        <span style="font-family:'Barlow Condensed';font-weight:900;font-size:1.4rem;color:var(--green);">${p.goals} ⚽</span>
+        ${p.assists > 0 ? `<span style="font-family:'Barlow Condensed';font-weight:700;color:var(--accent);font-size:.9rem;">${p.assists} 🅰️</span>` : ''}
+      </div>
+    `).join('')}
+  </div>`;
+}
 
-window.guardarPartidos = async function() {
-  const validos = tmpPartidos.filter(p=>p.home.trim()&&p.away.trim());
-  if (!validos.length) { toast('Agrega al menos un partido con ambos equipos', true); return; }
-  const obj = {};
-  validos.forEach(p => obj[p.id] = p);
-  try {
-    await fbSet('quiniela/partidos', obj);
-    toast('Partidos guardados');
-  } catch(e) { toast('Error: '+e.message, true); }
-};
+// ── RECOMMENDATIONS (local, sin API) ──
+function fetchRecommendations() {
+  recsLoaded = true;
+  const d = currentTeamData;
+  document.getElementById('recsLoading').style.display = 'block';
+  document.getElementById('recsContent').innerHTML = '';
 
-/* ── Resultados ── */
-function renderResultadosAdmin() {
-  const cont = document.getElementById('resultados-admin');
-  if (!state.partidos.length) { cont.innerHTML='<p class="note">Primero guarda los partidos.</p>'; return; }
-  cont.innerHTML = state.partidos.map(p => `
-    <div class="match-row">
-      <div style="flex:1;min-width:140px;font-weight:600">${esc(p.home)} vs ${esc(p.away)}</div>
-      <div class="select-options" data-rid="${p.id}">
-        ${['L','E','V'].map(o => {
-          const sel = state.resultados[p.id]===o;
-          return `<button class="opt-btn ${sel?'sel-'+o:''}" onclick="selResult('${p.id}','${o}',this)">${o}</button>`;
-        }).join('')}
-        ${state.resultados[p.id]
-          ? `<span class="result-badge">${state.resultados[p.id]}</span>`
-          : '<span class="note">Sin resultado</span>'}
+  setTimeout(() => {
+    const pts = d.stats.pts;
+    const gd = d.stats.gf - d.stats.gc;
+    const topPlayer = [...d.players].sort((a,b)=>(b.goals+b.assists)-(a.goals+a.assists))[0];
+
+    // Calcular puntuaciones según rendimiento
+    const score = Math.min(10, Math.max(3, (pts * 1.2 + gd * 0.5 + 4))).toFixed(1);
+    const advProb = Math.min(97, Math.max(10, pts*20 + gd*5 + 40));
+    const semiProb = Math.min(60, Math.max(5, pts*8 + gd*3 + 10));
+    const winProb  = Math.min(30, Math.max(2, pts*4 + gd*2 + 3));
+    const risk = pts >= 4 ? 'Bajo' : pts >= 2 ? 'Medio' : 'Alto';
+
+    const rec = {
+      quinielaScore: score,
+      quinielaVerdict: pts >= 4
+        ? `${currentTeamName} es una apuesta sólida para tu quiniela. Están liderando o en la cima de su grupo con ${pts} puntos y diferencia de goles de ${gd >= 0 ? '+' : ''}${gd}. Muy probables de clasificar a la siguiente ronda.`
+        : pts >= 2
+        ? `${currentTeamName} tiene posibilidades reales pero su clasificación no está asegurada. Con ${pts} pts y diff ${gd >= 0 ? '+' : ''}${gd}, todo depende del último partido. Considera marcarlos en empate o victoria ajustada.`
+        : `${currentTeamName} está en apuros con solo ${pts} puntos. Necesitan ganar el último partido para sobrevivir. Apuesta arriesgada para la quiniela, pero si clasifican será una gran sorpresa.`,
+      quinielaTip: pts >= 4
+        ? `✅ Apuesta a que ${currentTeamName} clasifica de grupos. En octavos, márcalos como favoritos frente a rivales de menor ranking. Su jugador ${topPlayer?.name || 'estrella'} es diferencial — espera goles de su parte.`
+        : pts >= 2
+        ? `⚠️ El partido 3 de ${currentTeamName} es clave. Si pasan, en octavos pueden dar sorpresa. Márcalos en empate o victoria mínima (1-0, 2-1) para el último partido de grupos.`
+        : `❌ Evita apostar por victorias de ${currentTeamName} salvo que necesites el bonus de sorpresa. Su última jornada es do-or-die — si ganan llegarán con mucha presión y eso puede ser imprevisible.`,
+      advanceProb: advProb,
+      winProb: winProb,
+      semiFinalProb: semiProb,
+      strengths: pts >= 4
+        ? ["Sólida fase de grupos","Eficacia goleadora","Organización defensiva"]
+        : pts >= 2
+        ? ["Competitivos en cada partido","Potencial de mejora","Colectivo comprometido"]
+        : ["Determinación bajo presión","Posibilidad de sorpresa","Nada que perder"],
+      weaknesses: pts >= 4
+        ? ["Puede relajarse en el 3er partido","Presión de ser favorito en KO"]
+        : pts >= 2
+        ? ["Inconsistencia en resultados","Dependencia de resultados ajenos"]
+        : ["Déficit de puntos es difícil de remontar","Confianza baja","Presión extrema"],
+      keyPlayers: d.players
+        .filter(p => p.goals > 0 || p.assists > 0 || parseFloat(p.rating) >= 8.0)
+        .sort((a,b) => (b.goals*2+b.assists+parseFloat(b.rating)) - (a.goals*2+a.assists+parseFloat(a.rating)))
+        .slice(0,3)
+        .map(p => ({
+          name: p.name,
+          role: `${p.pos} · ${p.goals} goles, ${p.assists} asistencias en el torneo`,
+          impactScore: p.rating
+        })),
+      nextMatchPrediction: `Partido 3 de grupos: ${currentTeamName} necesita ${pts < 3 ? 'una victoria para sobrevivir' : 'al menos un empate para asegurar el pase'}. Pronóstico: ${pts >= 4 ? '✅ Pasan como primeros o segundos del grupo' : pts >= 2 ? '⚠️ Todo por definir, partido de alto voltaje' : '❌ Necesitan el milagro, pero tienen 11 jugadores en el campo'}.`,
+      style: pts >= 4 ? "Juego directo y efectivo, con transiciones rápidas y solidez defensiva." : "Combinan posesión y contragolpe según el rival, buscando aprovechar los espacios.",
+      riskLevel: risk,
+      riskReason: risk === 'Bajo' ? "Están en buena posición con puntos suficientes para clasificar casi con seguridad."
+        : risk === 'Medio' ? "Su clasificación depende del último partido — hay incertidumbre real."
+        : "Con 0-1 puntos, necesitan ganar sí o sí para seguir en el torneo."
+    };
+
+    renderRecommendations(rec);
+  }, 800);
+}
+
+function renderRecommendations(r) {
+  document.getElementById('recsLoading').style.display = 'none';
+
+  const riskColor = r.riskLevel === 'Bajo' ? 'var(--green)' : r.riskLevel === 'Medio' ? 'var(--accent2)' : 'var(--red)';
+  const riskTag = r.riskLevel === 'Bajo' ? 'tag-green' : r.riskLevel === 'Medio' ? 'tag-orange' : 'tag-red';
+
+  document.getElementById('recsContent').innerHTML = `
+
+    <!-- VEREDICTO QUINIELA -->
+    <div class="verdict-box">
+      <div style="display:flex;align-items:flex-end;gap:12px;flex-wrap:wrap;">
+        <div>
+          <div class="verdict-score">${r.quinielaScore}<span style="font-size:1.5rem;color:var(--muted)">/10</span></div>
+          <div class="verdict-label">Puntuación Quiniela</div>
+        </div>
+        <div style="flex:1;min-width:180px;">
+          <span class="tag ${riskTag}" style="margin-bottom:6px;display:inline-block;">Riesgo ${r.riskLevel}</span>
+          <div style="font-size:.8rem;color:var(--muted);line-height:1.4;">${r.riskReason}</div>
+        </div>
+      </div>
+      <div class="verdict-text">${r.quinielaVerdict}</div>
+    </div>
+
+    <!-- CONSEJO QUINIELA -->
+    <div class="rec-card">
+      <div class="rec-card-title"><span>💡</span> Consejo para tu quiniela</div>
+      <div class="quinela-tip">${r.quinielaTip}</div>
+    </div>
+
+    <!-- PROBABILIDADES -->
+    <div class="rec-card">
+      <div class="rec-card-title"><span>📊</span> Probabilidades de avance</div>
+
+      <div class="prob-bar-wrap">
+        <div class="prob-label"><span>Clasificar de grupos</span><span style="color:var(--green)">${r.advanceProb}%</span></div>
+        <div class="prob-bar"><div class="prob-fill" style="width:${r.advanceProb}%;background:var(--green)"></div></div>
+      </div>
+
+      <div class="prob-bar-wrap">
+        <div class="prob-label"><span>Llegar a Semifinal</span><span style="color:var(--accent)">${r.semiFinalProb}%</span></div>
+        <div class="prob-bar"><div class="prob-fill" style="width:${r.semiFinalProb}%;background:var(--accent)"></div></div>
+      </div>
+
+      <div class="prob-bar-wrap">
+        <div class="prob-label"><span>Ganar el Mundial</span><span style="color:var(--accent2)">${r.winProb}%</span></div>
+        <div class="prob-bar"><div class="prob-fill" style="width:${r.winProb}%;background:var(--accent2)"></div></div>
       </div>
     </div>
-  `).join('');
+
+    <!-- FORTALEZAS Y DEBILIDADES -->
+    <div class="rec-card">
+      <div class="rec-card-title"><span>⚖️</span> Análisis del equipo</div>
+      <div style="margin-bottom:10px;font-size:.8rem;letter-spacing:1px;text-transform:uppercase;color:var(--green);font-weight:700;">Fortalezas</div>
+      <div class="tag-list" style="margin-bottom:16px;">
+        ${r.strengths.map(s => `<span class="tag tag-green">✓ ${s}</span>`).join('')}
+      </div>
+      <div style="margin-bottom:10px;font-size:.8rem;letter-spacing:1px;text-transform:uppercase;color:var(--red);font-weight:700;">Debilidades</div>
+      <div class="tag-list" style="margin-bottom:14px;">
+        ${r.weaknesses.map(w => `<span class="tag tag-red">✗ ${w}</span>`).join('')}
+      </div>
+      <div style="margin-top:14px;background:rgba(0,194,255,0.05);border:1px solid rgba(0,194,255,0.1);border-radius:8px;padding:10px 14px;font-size:.85rem;color:var(--muted);">
+        🎮 <strong style="color:var(--text)">Estilo de juego:</strong> ${r.style}
+      </div>
+    </div>
+
+    <!-- JUGADORES CLAVE -->
+    <div class="rec-card">
+      <div class="rec-card-title"><span>⭐</span> Jugadores clave para la quiniela</div>
+      ${r.keyPlayers.map((p,i) => `
+        <div class="player-key-row">
+          <div class="player-key-icon">${['⭐','🔥','💎'][i] || '🎯'}</div>
+          <div class="player-key-info">
+            <div class="player-key-name">${p.name}</div>
+            <div class="player-key-role">${p.role}</div>
+          </div>
+          <div class="player-key-score">${p.impactScore}</div>
+        </div>
+      `).join('')}
+    </div>
+
+    <!-- PREDICCIÓN PRÓXIMO PARTIDO -->
+    <div class="rec-card">
+      <div class="rec-card-title"><span>🔮</span> Predicción próxima fase</div>
+      <div style="font-size:.95rem;line-height:1.65;color:var(--text);">${r.nextMatchPrediction}</div>
+    </div>
+
+    <div class="ai-note">
+      <strong>⚡ Claude AI</strong> — Recomendaciones generadas por IA. Úsalas como referencia, no como garantía.
+    </div>
+  `;
 }
 
-window.selResult = function(matchId, opt, btn) {
-  state.resultados[matchId] = opt;
-  const row = btn.closest('[data-rid]');
-  row.querySelectorAll('.opt-btn').forEach(b=>b.className='opt-btn');
-  btn.classList.add('sel-'+opt);
-  let badge = row.querySelector('.result-badge');
-  if (!badge) { badge=document.createElement('span'); badge.className='result-badge'; row.appendChild(badge); }
-  badge.textContent = opt;
-  const nota = row.querySelector('.note'); if(nota) nota.remove();
-};
+// ── INIT ──
+renderTeams();
 
-window.guardarResultados = async function() {
-  try {
-    await fbSet('quiniela/resultados', state.resultados);
-    toast('Resultados guardados — la tabla se actualizó en todos los dispositivos');
-  } catch(e) { toast('Error: '+e.message, true); }
-};
-
-/* ── Tabla Admin ── */
-function renderAdminTabla() {
-  const head = document.getElementById('tabla-admin-head');
-  const body = document.getElementById('tabla-admin-body');
-  if (!state.participantes.length || !state.partidos.length) {
-    head.innerHTML='';
-    body.innerHTML='<tr><td colspan="99" style="text-align:center;color:var(--gris);padding:24px">Sin participantes aún</td></tr>';
-    return;
-  }
-  head.innerHTML = `<tr>
-    <th style="text-align:left;padding-left:14px">Participante</th>
-    <th>Pago</th>
-    ${state.partidos.map(p=>`<th class="partido-col"><div class="match-teams"><span class="home">${esc(p.home)}</span><span class="away">${esc(p.away)}</span></div></th>`).join('')}
-    <th>Aciertos</th>
-    <th>Acciones</th>
-  </tr>`;
-
-  const hasResult = Object.keys(state.resultados).length>0;
-  body.innerHTML = state.participantes.map(part => {
-    let aciertos=0;
-    const celdas = state.partidos.map(p=>{
-      const pick=part.picks?.[p.id]||'–', res=state.resultados[p.id];
-      let cls='';
-      if(res){if(pick===res){cls='correct';aciertos++;}else{cls='wrong';}}
-      return `<td><span class="pick ${cls}">${pick}</span></td>`;
-    }).join('');
-    const pagoClass = part.pagado?'paid':'';
-    const pagoLabel = part.pagado?'Pagó ✅':'Pendiente ⏳';
-    return `<tr>
-      <td class="name-cell">${esc(part.nombre)}</td>
-      <td><button class="pay-toggle ${pagoClass}" onclick="togglePago('${part.id}',${part.pagado})">${pagoLabel}</button></td>
-      ${celdas}
-      <td class="score-cell">${hasResult?aciertos:'–'}</td>
-      <td><button class="btn btn-danger btn-sm" onclick="eliminarParticipante('${part.id}','${esc(part.nombre)}')">🗑</button></td>
-    </tr>`;
-  }).join('');
-}
-
-window.togglePago = async function(id, actual) {
-  try {
-    await fbUpdate(`quiniela/participantes/${id}`, { pagado: !actual });
-    toast(!actual ? 'Marcado como pagado' : 'Marcado como pendiente');
-  } catch(e) { toast('Error: '+e.message, true); }
-};
-
-window.eliminarParticipante = async function(id, nombre) {
-  if (!confirm(`¿Eliminar a ${nombre}?`)) return;
-  try {
-    await fbRemove(`quiniela/participantes/${id}`);
-    toast('Participante eliminado');
-  } catch(e) { toast('Error: '+e.message, true); }
-};
-
-window.eliminarQuiniela = async function() {
-  if (!confirm('¿Eliminar TODA la quiniela? Se borrarán partidos, resultados y participantes en todos los dispositivos.')) return;
-  try {
-    await fbRemove('quiniela');
-    tmpPartidos = [];
-    toast('Quiniela eliminada');
-  } catch(e) { toast('Error: '+e.message, true); }
-};
-
-/* ════════════════════════════
-   UTILS
-════════════════════════════ */
-function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2,6); }
-function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-
-/* ════════════════════════════
-   INIT
-════════════════════════════ */
-startListeners();
+// keyboard close
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 </script>
 </body>
 </html>
